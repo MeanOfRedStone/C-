@@ -149,7 +149,7 @@ typedef int element;
 typedef struct {
 	element data[MAX_STACK_SIZE];
 	int top; 
-}StackType;
+} StackType;
 
 //스택 초기화 함수
 void init_stack(StackType *s)
