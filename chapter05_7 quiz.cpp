@@ -139,6 +139,7 @@ int get_count(QueueType *q)
 //9. 2개의 스택을 사용하여 큐를 구현. 입력이 들어오면 스택#1에 넣는다.
 //출력 요청이 들어오면 스택 #2에서 요소를 꺼낸다. 
 //스택 #2가 비어있을 때는 스택#1의 모든 요소를 꺼내서 스택 #2에 넣는다.
+/*
 #include <stdio.h>
 #include <stdlib.h>
 #define MAX_STACK_SIZE 100
@@ -269,13 +270,549 @@ int main(void)
 	printf("%d", pop)
 	return 0;
 }
-
+*/
+/*
 //10. 피보나치 수열 
+#include <stdio.h>
+#include <string.h> 
+#include <stdlib.h>
+# define MAX_QUEUE_SIZE 5
 
+typedef int element;
+typedef struct{
+	int front, rear;
+	element data[MAX_QUEUE_SIZE];
+} QueueType;
 
+//공백  상태 검출 함수
+int is_empty(QueueType *q)
+{
+	return(q->front == q->rear);
+} 
 
+//포화 상태 검출 함수
+int is_full(QueueType *q)
+{
+	return ((q->rear + 1) % MAX_QUEUE_SIZE == q->front);	
+}
 
+void queue_print(QueueType *q)
+{
+	printf("Queue(front = %d rear = %d) = ", q->front, q->rear);
+	if(!is_empty(q))
+	{
+		int i = q->front;
+		do
+		{
+			i = (i+1) % (MAX_QUEUE_SIZE);
+			printf(" %d |", q->data[i]);
+			if(i == q->rear)
+				break; 
+		} while (i != q->front);
+		printf("\n");
+	}
+}
 
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+}
+
+void init_queue(QueueType *q)
+{
+	q->front = q->rear = 0;
+}
+
+void enqueue(QueueType *q, element item)
+{
+	if(is_full(q))
+	{
+		error("큐가 포화상태입니다.");
+	}
+	else 
+	{
+		q->rear = (q->rear + 1) % MAX_QUEUE_SIZE;
+		q->data[q->rear] = item;
+	}
+}
+
+element dequeue(QueueType *q)
+{
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다.");
+	}
+	else
+	{
+		q->front = (q->front + 1) % MAX_QUEUE_SIZE;
+		return q->data[q->front];
+	}
+}
+
+element peek(QueueType *q)
+{
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다.");
+	}
+	else
+	{
+		return q->data[(q->front + 1) % MAX_QUEUE_SIZE];
+	}
+}
+
+element fibonacci(QueueType *q)
+{
+	element a = dequeue(q);
+	element b = dequeue(q);
+	element c = b + a;
+	enqueue(q, b);
+	enqueue(q, c);
+	
+	return c;
+}
+
+int main(void)
+{
+	QueueType q;
+	init_queue(&q);
+	
+	enqueue(&q, 0);
+	enqueue(&q, 1);
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	printf("%d", fibonacci(&q));
+	queue_print(&q);
+	return 0;
+}
+*/
+/*
+//11.회문. 덱을 이용하여 주어진 문자열이 회문인지 아닌지를 결정하는 프로그램
+//작성하시오
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_QUEUE_SIZE 20
+#define SIZE 100
+typedef char element;
+typedef struct {
+	element data[MAX_QUEUE_SIZE];
+	int front, rear; 
+} DequeType; 
+
+//오류함수
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);	
+} 
+void init_dqueue(DequeType *q)
+{
+	q->front = q->rear = 0;
+}
+
+//초기화
+void init_deque(DequeType *q)
+{
+	q->front = q->rear = 0;	
+}
+
+//공백 상태 검출 함수
+int is_empty(DequeType *q)
+{
+	return (q->front == q->rear);	
+}
+
+//포화 상태 검출 함수
+int is_full(DequeType *q)
+{
+	return ((q->rear + 1) % MAX_QUEUE_SIZE == q->front);
+}
+
+//원형큐 출력 함수
+void deque_print(DequeType *q)
+{
+	printf("DEQUE(front=%d rear=%d) = ", q->front, q->rear);
+	if(!is_empty(q))
+	{
+		int i = q->front;
+		do{
+			i = (i + 1)% (MAX_QUEUE_SIZE);
+			printf("%d | ", q->data[i]);
+			if(i == q -> rear)
+			{
+				break;
+			}
+		} while (i != q->front);
+		printf("\n");
+	}	
+} 
+
+//삽입함수
+void add_rear(DequeType *q, element item)
+{
+	if(is_full(q))
+	{
+		error("큐가 포화상태입니다.");
+		
+	}
+	q->rear = (q->rear + 1) % MAX_QUEUE_SIZE;
+	q->data[q->rear] = item;   	
+} 
+
+//삭제 함수 
+element delete_front(DequeType *q)
+{
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다");
+	}
+	q->front = (q->front + 1) % MAX_QUEUE_SIZE;
+	return q->data[q->front];	
+}
+
+//삭제 함수
+element get_front(DequeType *q)
+{
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다");
+	}
+	q->front = (q->front + 1) % MAX_QUEUE_SIZE;
+	return q->data[(q->front + 1) % MAX_QUEUE_SIZE];		
+	
+}  
+
+void add_front(DequeType *q, element val)
+{
+	if(is_full(q))
+	{
+		error("큐가 포화상태입니다.");
+	}
+	q->data[q->front] = val;
+	q->front = (q->front - 1 + MAX_QUEUE_SIZE) % MAX_QUEUE_SIZE;  
+}
+
+element delete_rear(DequeType *q)
+{
+	int prev = q->rear;
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다");
+	}
+	q->rear = (q->rear - 1 + MAX_QUEUE_SIZE) % MAX_QUEUE_SIZE;
+	return q->data[prev]; 
+}
+
+element get_rear(DequeType * q )
+{
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다");
+	}
+	return q->data[q->rear]; 
+}
+
+int main(void)
+{
+	DequeType q;
+	init_deque(&q);
+	char p[SIZE];
+	
+	printf("문자열을 입력하세요 : ");
+	gets(p);
+	strlwr(p);
+	int check = 1;
+	int n = strlen(p);
+	for(int i = 0; i < n; i++)
+	{
+		char ch = p[i];
+		if(ch == ' ' || ch == '\'' || ch== ',' )
+		{
+			continue;
+		}
+		else
+		{
+			add_rear(&q, ch);
+		}
+	}
+
+	for(int i = 0; i < n; i++)
+	{ 
+		if(p[i] == ' ' || p[i] == '\'' || p[i] == ',' )
+		{
+			continue;
+		}
+		else 
+		{
+			if(p[i] == delete_rear(&q)) // 이렇게 하야 pop을 한 번만 해서 queue 공백 안생김 
+			{
+				check = check * 1 ;
+			}
+			else
+			{
+				check = check * 0;
+			}
+		}
+	}
+//	for(int i = 0; i < n; i++)
+//	{
+//		if(p[i] == ' ' || p[i] == '\'' || p[i] == ',' )
+//		{
+//			continue;
+//		}
+//		else if(p[i] == delete_rear(&q))
+//		{
+//			check = check * 1;
+//		}
+//		else if(p[i] != delete_rear(&q)) // 이렇게 해버리면 계속 pop이 생김
+	
+	if(check == 1)
+	{
+		printf("회문입니다");
+	}
+	else
+	{
+		printf("회문이 아닙니다");
+	}
+	return 0;	
+} 
+*/
+//12.태스크 스캐쥴링 알고리즘 A-steal 알고리즘
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_QUEUE_SIZE 5
+
+typedef char element;
+typedef struct {
+	element data[MAX_QUEUE_SIZE];
+	int front, rear; 
+} DequeType; 
+
+//오류함수
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);	
+} 
+void init_dqueue(DequeType *q)
+{
+	q->front = q->rear = 0;
+}
+
+//초기화
+void init_deque(DequeType *q)
+{
+	q->front = q->rear = 0;	
+}
+
+//공백 상태 검출 함수
+int is_empty(DequeType *q)
+{
+	return (q->front == q->rear);	
+}
+
+//포화 상태 검출 함수
+int is_full(DequeType *q)
+{
+	return ((q->rear + 1) % MAX_QUEUE_SIZE == q->front);
+}
+
+//원형큐 출력 함수
+void deque_print(DequeType *q)
+{
+	printf("DEQUE(front=%d rear=%d) = ", q->front, q->rear);
+	if(!is_empty(q))
+	{
+		int i = q->front;
+		do{
+			i = (i + 1)% (MAX_QUEUE_SIZE);
+			printf("%d | ", q->data[i]);
+			if(i == q -> rear)
+			{
+				break;
+			}
+		} while (i != q->front);
+		printf("\n");
+	}	
+} 
+
+//삽입함수
+void add_rear(DequeType *q, element item)
+{
+	if(is_full(q))
+	{
+		error("큐가 포화상태입니다.");
+		
+	}
+	q->rear = (q->rear + 1) % MAX_QUEUE_SIZE;
+	q->data[q->rear] = item;   	
+} 
+
+//삭제 함수 
+element delete_front(DequeType *q)
+{
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다");
+	}
+	q->front = (q->front + 1) % MAX_QUEUE_SIZE;
+	return q->data[q->front];	
+}
+
+//삭제 함수
+element get_front(DequeType *q)
+{
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다");
+	}
+	q->front = (q->front + 1) % MAX_QUEUE_SIZE;
+	return q->data[(q->front + 1) % MAX_QUEUE_SIZE];		
+	
+}  
+
+void add_front(DequeType *q, element val)
+{
+	if(is_full(q))
+	{
+		error("큐가 포화상태입니다.");
+	}
+	q->data[q->front] = val;
+	q->front = (q->front - 1 + MAX_QUEUE_SIZE) % MAX_QUEUE_SIZE;  
+}
+
+element delete_rear(DequeType *q)
+{
+	int prev = q->rear;
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다");
+	}
+	q->rear = (q->rear - 1 + MAX_QUEUE_SIZE) % MAX_QUEUE_SIZE;
+	return q->data[prev]; 
+}
+
+element get_rear(DequeType * q )
+{
+	if(is_empty(q))
+	{
+		error("큐가 공백상태입니다");
+	}
+	return q->data[q->rear]; 
+}
+int main(void)
+{
+	DequeType worker1;
+	DequeType worker2;
+	DequeType worker3;
+	
+	init_deque(&worker1);
+	init_deque(&worker2);
+	init_deque(&worker3);
+	
+	srand(time(NULL));
+	for(int i = 0; i < 100; i++)
+	{
+		printf("%d회기\n",i+1);
+		if( rand() % 4 == 0) // 5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80 85 90 95 - 19개 
+		{
+			add_rear(&worker1, rand() % 120);
+		}
+		else if(rand() % 5 == 0 && rand() % 4 != 0) //12 24 36 48 72 84 96  7개 
+		{
+			add_rear(&worker2, rand() % 120);
+		}
+		else if(rand() % 7 == 0 && rand() % 4 != 0 && rand() % 5 != 0) //7 14 21 28 42 49 56 63 77 91 98 11개 
+		{
+			add_rear(&worker3, rand() % 120);
+		}
+		printf("작업 투입\n");
+		printf("worker1:");
+		deque_print(&worker1); 
+		printf("\n");
+		printf("worker2:");
+		deque_print(&worker2);
+		printf("\n");
+		printf("worker3:");
+		deque_print(&worker3);
+		printf("\n");
+		
+		if( rand () % 10 == 0 ) //100개 중 10의 배수는 10개이다. = 10% 
+		{
+			delete_front(&worker1);
+		}
+		else if( rand() % 12 == 0 && rand() % 10 != 0) //24 48 72 96
+		{
+			delete_front(&worker2);
+		}
+		else if(rand() % 14 == 0 && rand() % 10 != 0 && rand() % 12 != 0  ) //14 28  56 60 74 88
+		{
+			delete_front(&worker3);
+		}
+		printf("작업 수행\n"); 
+		printf("worker1:");
+		deque_print(&worker1);
+		printf("\n");
+		printf("worker2:");
+		deque_print(&worker2);
+		printf("\n");
+		printf("worker3:");
+		deque_print(&worker3);
+		printf("\n");
+		if(is_empty(&worker2))
+		{
+			if(!is_empty(&worker1))
+			{
+				printf(">>>>작업이 이전됩니다. work1 -> work2\n");
+				element work = delete_rear(&worker1);
+				add_rear(&worker2, work);
+			}
+		}
+		
+		if(is_empty(&worker3)&&!is_empty(&worker2))
+		{
+			if(!is_empty(&worker1))
+			{
+				printf(">>>>작업이 이전됩니다. work1 -> work3\n");
+				element work = delete_rear(&worker1);
+				add_rear(&worker3, work);
+			}
+		}
+		
+	}
+	
+	
+	return 0;
+}
   
  
  
