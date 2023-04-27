@@ -71,6 +71,7 @@ void print_list(ListNode)
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 typedef int element;
 typedef struct ListNode{
@@ -108,7 +109,7 @@ ListNode* insert(ListNode *head, ListNode *pre, element value)
 ListNode* delete_first(ListNode *head)
 {
 	ListNode *removed;
-	if(head=NULL)
+	if(head==NULL)
 	{
 		return NULL;
 	}
@@ -138,7 +139,28 @@ void print_list(ListNode *head)
 	}
 	printf("NULL \n");
 }
+//도전 문제 :index 번째의 데이터 반환 
+element get_entry(ListNode *head, int index) 
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p = head;
+	for(int i = 0; i < index - 1; i++) 
+	{
+		p = p->link;
+	}
 
+	return p->data;
+}
+//quiz 2번 문제 
+int get_length(ListNode *head)
+{
+	int count = 0;
+	for(ListNode *p = head; p != NULL; p=p->link) //새로운 링크 자리의 주소값이 비어있지 않다면 
+	{
+		count = count + 1;
+	}
+	return count;
+}
 int main(void)
 {
 	ListNode *head = NULL;
@@ -148,11 +170,17 @@ int main(void)
 		head = insert_first(head, i);
 		print_list(head);
 	}
-	for(int i = 0; i < 5; i++)
-	{
-		head = delete_first(head);
-		print_list(head);
-	}
-	
+//도전 문제 위해 주석 처리 함 
+//	for(int i = 0; i < 5; i++)
+//	{
+//		head = delete_first(head);
+//		print_list(head);
+//	}
+	printf("노드의 수는 : %d개입니다.\n", get_length(head)); 
+	printf("반환 하고싶은 위치의 노드를 입력하세요 : ");
+	int x;
+	scanf("%d", &x); 
+	printf("%d", get_entry(head, x));
+	 
 	return 0;
 }
