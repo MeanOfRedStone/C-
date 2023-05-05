@@ -304,6 +304,7 @@ int main(void)
 	return 0;	
 } 
 */
+/*
 //11.단순 연결 리스트에 정수가 저장되어 있다. 연결 리스트에 있는 모든 노드의 데이터 값을 합한 결과를 출력하는 프로그램을 작성하시오.
 #include <stdio.h> 
 #include <stdlib.h>
@@ -425,5 +426,306 @@ int main(void)
 	
 	return 0;	
 } 
+*/
+/*
+//12. 연결 리스트에서 특정한 데이터 값을 갖는 노드의 개수를 계산하는 함수를 작성하라
+#include <stdio.h> 
+#include <stdlib.h>
+#include <string.h>
+
+typedef int element;
+typedef struct ListNode{
+	element data;
+	struct ListNode *link;
+} ListNode;
+
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+}
+
+ListNode* insert_first(ListNode *head, element value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = head; //먼저 p를 완성시켜주고
+	head = p; //link 자체인 head == 다음 노드 자리. 이곳에  p를 넣어준다.
 	
+	return head; 
+}
+
+ListNode* insert(ListNode *head, ListNode *pre, element value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = pre->link;
+	pre->link = p; //(3)p를 완성시켜주고 위치 집어넣어준다. 
+	
+	return head; 
+}
+
+ListNode* delete_first(ListNode *head)
+{
+	if(head==NULL)
+	{
+		return NULL; 
+	}
+	else
+	{
+	ListNode *removed; //데이터를 새로 주는 것이 아니기 때문에 동적 메모리 할당을 할 필요가 없다.
+	removed = head; //removed 값을 알기 위해서는 removed가 뭔지 알기 알아야 함. 이를  위해서 link 그자체인 head == 첫 노드 
+	head = removed->link;
+	free(removed);
+	
+	return head;
+	}
+}
+
+ListNode* delete_delete(ListNode *head, ListNode *pre)
+{
+	ListNode *removed;
+	removed = pre->link; //링크는 노드 그 자체이니깐 removed가 뭔지 알려면 pre->link를 넣어줘야함. 
+	pre->link = removed->link;
+	free(removed);
+	
+	return head; 
+}
+
+void print_list(ListNode *head)
+{
+	for(ListNode *p = head; p != NULL ; p = p->link)
+	{
+		printf("%d->",p->data);
+	}
+	printf("NULL\n"); //마지막이란 걸 알리기 위해	
+} 
+
+int main(void)
+{
+	ListNode *head = NULL; //head 생성 처음에는 비어있는 상태로 설정
+	int n;
+	printf("노드의 개수 : ");
+	scanf("%d",&n);
+	ListNode *location = head;
+	if(n < 1)
+	{
+		error("1 이상 입력하세요.");
+	}
+	else if(n == 1)
+	{
+		element value;
+		printf("노드 #1의 데이터 : ");
+		scanf("%d", &value);
+		head = insert_first(head, value);
+		printf("탐색할 값을 입력하시오 : ");
+		int find;
+		scanf("%d", &find);
+		if(find == value)
+		{
+			printf("%d는 연결 리스트에서 1번 나타납니다.", find);
+		}
+		else
+		{
+			printf("%d는 연결 리스트에서 0번 나타납니다.", find);
+		}
+	}
+	else
+	{
+		element value;
+		printf("노드 #1의 데이터 : ");
+		scanf("%d", &value);
+		head = insert_first(head, value);
+		location = head;
+		for(int i = 1; i < n; i++)
+		{
+			printf("노드 #%d의 데이터 : ", i+1);
+			scanf("%d", &value);
+			head = insert(head, location, value);
+			location = head;
+			for(int j = 0; j < i; j++ )
+			{
+				location = location->link;
+			}
+		}
+		
+		int cnt = 0;
+		printf("탐색할 값을 입력하시오 : ");
+		int find;
+		scanf("%d", &find);
+		for(ListNode *p = head; p != NULL; p = p->link)
+		{
+			if(find == p->data)
+			{
+				cnt = cnt + 1;
+			}
+		}
+		printf("%d는 연결 리스트에서 %d번 나타납니다.", find, cnt);
+	}
+	
+	return 0;	
+} 
+*/
+/*
+//13. 단순 연결 리스트에서 탐색함수를 참고하여 특정한 데이터 값을 갖는 노드를 삭제하는 함수를 작성하라.   
+ListNode* search_list(ListNode *head, element x)
+{
+	ListNode *p = head;
+	ListNode *location;
+	
+	while(p != NULL)
+	{
+		if(p->data == x)
+		{
+			delete_delete(head, location);
+			p = location;
+			return head;
+		}
+		location = p;
+		p = p->link;
+	}
+	return NULL; //탐색 실패 시 사용 
+} 
+*/
+//14.다음 그림과 같은 데이터를 저장할 수 있는 단순 연결 리스트를 생성하는 프로그램을 작성해보자.
+/*
+//15. 단순 연결 리스트가 정렬되지 않은 정수들의 리스트를 저장하고 있다. 리스트에서 최대값과 최소값을 찾는 프로그램을 작성하라. 
+#include <stdio.h> 
+#include <stdlib.h>
+#include <string.h>
+
+typedef int element;
+typedef struct ListNode{
+	element data;
+	struct ListNode *link;
+} ListNode;
+
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+}
+
+ListNode* insert_first(ListNode *head, element value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = head; //먼저 p를 완성시켜주고
+	head = p; //link 자체인 head == 다음 노드 자리. 이곳에  p를 넣어준다.
+	
+	return head; 
+}
+
+ListNode* insert(ListNode *head, ListNode *pre, element value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = pre->link;
+	pre->link = p; //(3)p를 완성시켜주고 위치 집어넣어준다. 
+	
+	return head; 
+}
+
+ListNode* delete_first(ListNode *head)
+{
+	if(head==NULL)
+	{
+		return NULL; 
+	}
+	else
+	{
+	ListNode *removed; //데이터를 새로 주는 것이 아니기 때문에 동적 메모리 할당을 할 필요가 없다.
+	removed = head; //removed 값을 알기 위해서는 removed가 뭔지 알기 알아야 함. 이를  위해서 link 그자체인 head == 첫 노드 
+	head = removed->link;
+	free(removed);
+	
+	return head;
+	}
+}
+
+ListNode* delete_delete(ListNode *head, ListNode *pre)
+{
+	ListNode *removed;
+	removed = pre->link; //링크는 노드 그 자체이니깐 removed가 뭔지 알려면 pre->link를 넣어줘야함. 
+	pre->link = removed->link;
+	free(removed);
+	
+	return head; 
+}
+
+void print_list(ListNode *head)
+{
+	for(ListNode *p = head; p != NULL ; p = p->link)
+	{
+		printf("%d->",p->data);
+	}
+	printf("NULL\n"); //마지막이란 걸 알리기 위해	
+} 
+
+
+int main(void)
+{
+	ListNode *head = NULL; //head 생성 처음에는 비어있는 상태로 설정
+	int n;
+	printf("노드의 개수 : ");
+	scanf("%d",&n);
+	ListNode *location = head;
+	if(n <= 1)
+	{
+		error("2개 이상 입력하세요.");
+	}
+	else
+	{
+		element value;
+		printf("노드 #1의 데이터 : ");
+		scanf("%d", &value);
+		head = insert_first(head, value);
+		location = head;
+		for(int i = 1; i < n; i++)
+		{
+			printf("노드 #%d의 데이터 : ", i+1);
+			scanf("%d", &value);
+			head = insert(head, location, value);
+			location = head;
+			for(int j = 0; j < i; j++ )
+			{
+				location = location->link;
+			}
+		}
+		
+		int max = -9999;
+		int min = 9999; 
+		
+		for(ListNode *p = head; p != NULL; p = p->link)
+		{
+			if(max < p->data)
+			{
+				max = p->data;
+			}
+			if(min > p->data)
+			{
+				min = p->data;
+			}
+		}
+		printf("최댓값 : %d, 최솟값 : %d", max, min);
+	}
+	
+	return 0;	
+} 
+*/
+
+//16.단순 연결 리스트의 헤드 포인터가 주어지면 홀수번 째  노드를 삭제하는 함수를 작성하라. 
+
+
+int get_length(ListNode *head)
+{
+	int cnt = 0;
+	for(ListNode *p = head; p != NULL; p = p->link)
+	{
+		cnt = cnt + 1;
+	}
+	return cnt;	
+}
+
+
 
