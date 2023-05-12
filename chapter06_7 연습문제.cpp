@@ -588,6 +588,97 @@ ListNode* search_list(ListNode *head, element x)
 } 
 */
 //14.다음 그림과 같은 데이터를 저장할 수 있는 단순 연결 리스트를 생성하는 프로그램을 작성해보자.
+#include <stdio.h> 
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct ListNode{
+	char name[100];
+	int age;
+	float heigh; 
+	struct ListNode *link;
+} ListNode;
+
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+}
+
+ListNode* insert_first(ListNode *head, char name[100], int age, float heigh)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	strcpy(p->name, name);
+	p->age = age;
+	p->heigh = heigh;
+	p->link = head; //먼저 p를 완성시켜주고
+	head = p; //link 자체인 head == 다음 노드 자리. 이곳에  p를 넣어준다.
+	
+	return head; 
+}
+
+ListNode* insert(ListNode *head, ListNode *pre, char name[100], int age, float heigh)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	strcpy(p->name, name);
+	p->age = age;
+	p->heigh = heigh;
+	p->link = pre->link;
+	pre->link = p; //(3)p를 완성시켜주고 위치 집어넣어준다. 
+	
+	return head; 
+}
+
+ListNode* delete_first(ListNode *head)
+{
+	if(head==NULL)
+	{
+		return NULL; 
+	}
+	else
+	{
+	ListNode *removed; //데이터를 새로 주는 것이 아니기 때문에 동적 메모리 할당을 할 필요가 없다.
+	removed = head; //removed 값을 알기 위해서는 removed가 뭔지 알기 알아야 함. 이를  위해서 link 그자체인 head == 첫 노드 
+	head = removed->link;
+	free(removed);
+	
+	return head;
+	}
+}
+
+ListNode* delete_delete(ListNode *head, ListNode *pre)
+{
+	ListNode *removed;
+	removed = pre->link; //링크는 노드 그 자체이니깐 removed가 뭔지 알려면 pre->link를 넣어줘야함. 
+	pre->link = removed->link;
+	free(removed);
+	
+	return head; 
+}
+
+void print_list(ListNode *head)
+{
+	for(ListNode *p = head; p != NULL ; p = p->link)
+	{
+		printf(" %s | %d | %.1f ->",p->name, p->age, p->heigh);
+	}
+	printf("NULL\n"); //마지막이란 걸 알리기 위해	
+} 
+
+int main(void)
+{
+	ListNode *head = NULL; //head 생성 처음에는 비어있는 상태로 설정
+	
+	head = insert_first(head, "choi", 30, 1.3);
+	head = insert_first(head, "lee", 48, 1.4);	
+	head = insert_first(head, "park", 27, 1.2);
+	head = insert_first(head, "kim", 34, 1.7);
+	print_list(head);
+	
+	
+	return 0;	
+} 
+
 /*
 //15. 단순 연결 리스트가 정렬되지 않은 정수들의 리스트를 저장하고 있다. 리스트에서 최대값과 최소값을 찾는 프로그램을 작성하라. 
 #include <stdio.h> 
@@ -716,16 +807,6 @@ int main(void)
 
 //16.단순 연결 리스트의 헤드 포인터가 주어지면 홀수번 째  노드를 삭제하는 함수를 작성하라. 
 
-
-int get_length(ListNode *head)
-{
-	int cnt = 0;
-	for(ListNode *p = head; p != NULL; p = p->link)
-	{
-		cnt = cnt + 1;
-	}
-	return cnt;	
-}
 
 
 
