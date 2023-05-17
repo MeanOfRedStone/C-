@@ -587,6 +587,7 @@ ListNode* search_list(ListNode *head, element x)
 	return NULL; //탐색 실패 시 사용 
 } 
 */
+/*
 //14.다음 그림과 같은 데이터를 저장할 수 있는 단순 연결 리스트를 생성하는 프로그램을 작성해보자.
 #include <stdio.h> 
 #include <stdlib.h>
@@ -678,6 +679,8 @@ int main(void)
 	
 	return 0;	
 } 
+
+*/
 
 /*
 //15. 단순 연결 리스트가 정렬되지 않은 정수들의 리스트를 저장하고 있다. 리스트에서 최대값과 최소값을 찾는 프로그램을 작성하라. 
@@ -806,6 +809,75 @@ int main(void)
 */
 
 //16.단순 연결 리스트의 헤드 포인터가 주어지면 홀수번 째  노드를 삭제하는 함수를 작성하라. 
+
+| 1(head) | -> | 2 | -> | 3 | -> | 4 | -> | 5 | -> | 6 | ->
+head
+p = p->link->link
+head->link(2번째)
+(1) 연결 바꾸기 
+head = head->link
+head->link->link = head->link->link->link(4번째)
+head->link->link->link->link = head->link->link->link->link->link(6번째)
+
+(2) 노드 삭제 
+free(head)1, 2
+free(head->link)3, 4
+free(head->link->link)5
+fre(head->link->link->link)7
+
+
+int count_list(ListNode *head)
+{
+	int cnt = 0;
+	for(ListNode *p = head; p != NULL; p = p->link )
+	{
+		cnt++;
+	}
+	
+	return cnt;
+}
+
+j를 2번씩 건너지 말고 i 그대로 써보자!! 
+i = 0 
+head = head->link
+
+i = 2
+j = 0, j = 2
+p = head->link->link = head->linnk->link->link
+
+i = 4
+j = 0 j = 2 j = 4
+head->link->link->link
+head->link->link->link
+head->link->link->link(4번째) = 
+ListNode* delete_odd(ListNode *head)
+{
+	if(count_list(head) % 2 == 0)
+	{
+		for(int i = 0; i < count_list(head); i = i + 2)
+		{
+			ListNode *p = head;	
+			for(int j = 0; j < i; j = j + 2)     i = 0 / i = 2 / i = 4 / i = 6
+			{
+				p = p->link
+			}
+			p = p->link
+			
+		}
+	}
+	else
+	{
+		
+	}
+}
+	
+	ListNode *removed;
+	removed = pre->link; //링크는 노드 그 자체이니깐 removed가 뭔지 알려면 pre->link를 넣어줘야함. 
+	pre->link = removed->link;
+	free(removed);
+	
+	return head; 
+
 
 
 
