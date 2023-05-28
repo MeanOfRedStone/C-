@@ -18,6 +18,7 @@ ListNode* insert_first(ListNode *head, element data)
 	{
 		node->link = head->link; //(1) head ->link는 마지막 노드가 가리키는 노드(최초의 노드) 
 		head->link = node; //마지막 노드 그 자체인 head ->link가 최초의 노드 node를 가리킴 
+		//마지막 노드는 여전히 head이기 때문에 head 의 위치는 바꿔줒 ㅣ않는다. 
 	}
 	
 	return head;
