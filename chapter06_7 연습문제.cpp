@@ -810,22 +810,76 @@ int main(void)
 
 //16.단순 연결 리스트의 헤드 포인터가 주어지면 홀수번 째  노드를 삭제하는 함수를 작성하라. 
 
-| 1(head) | -> | 2 | -> | 3 | -> | 4 | -> | 5 | -> | 6 | ->
-head
-p = p->link->link
-head->link(2번째)
-(1) 연결 바꾸기 
-head = head->link
-head->link->link = head->link->link->link(4번째)
-head->link->link->link->link = head->link->link->link->link->link(6번째)
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-(2) 노드 삭제 
-free(head)1, 2
-free(head->link)3, 4
-free(head->link->link)5
-fre(head->link->link->link)7
+typedef int element;
+typedef struct ListNode{
+	element data;
+	struct ListNode *link;
+} ListNode;
 
+//오류 처리 함수 
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+}
 
+//첫행에 노드 삽입
+ListNode* insert_first(ListNode *head, int value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = head; //head 자체는 포인터이기 때문에 head->link라고 하지 않는다. 
+	head = p; //head 자체를 listnode p가 대신한다.
+	return head; 
+}
+
+//노드 pre 뒤에 새로운 노드 삽입
+ListNode* insert(ListNode *head, ListNode *pre, element value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = pre->link;
+	pre->link = p; //포인터 자리에 이제 새로운 노드를 넣어주는 것. 
+	return head; 
+} 
+
+ListNode* delete_first(ListNode *head)
+{
+	ListNode *removed;
+	if(head==NULL)
+	{
+		return NULL;
+	}
+	else
+	{
+		removed = head; //노드 removed 자리에 포인터인 head를 넣어준다.
+		head = removed->link;
+		free(removed);
+		return head; 
+	}
+}
+
+ListNode* delete_delete(ListNode *head, ListNode *pre)
+{
+	ListNode *removed;
+	removed = pre->link; //노드 그 자체는 포인터와 같다.
+	pre->link = removed->link;
+	free(removed);
+	return head;
+}
+
+void print_list(ListNode *head)
+{
+	for(ListNode *p = head; p != NULL; p=p->link) //새로운 링크 자리의 주소값이 비어있지 않다면 
+	{
+		printf("%d->",p->data);
+	}
+	printf("NULL \n");
+}
 int count_list(ListNode *head)
 {
 	int cnt = 0;
@@ -837,48 +891,98 @@ int count_list(ListNode *head)
 	return cnt;
 }
 
-j를 2번씩 건너지 말고 i 그대로 써보자!! 
-i = 0 
-head = head->link
-
-i = 2
-j = 0, j = 2
-p = head->link->link = head->linnk->link->link
-
-i = 4
-j = 0 j = 2 j = 4
-head->link->link->link
-head->link->link->link
-head->link->link->link(4번째) = 
-ListNode* delete_odd(ListNode *head)
+ListNode* odd_remove(ListNode* head)
 {
-	if(count_list(head) % 2 == 0)
+	
+	int count = count_list(head);
+
+	if(count % 2 == 0)
 	{
-		for(int i = 0; i < count_list(head); i = i + 2)
+		for(int i = 1; i < (count / 2) + 1; i++)
 		{
-			ListNode *p = head;	
-			for(int j = 0; j < i; j = j + 2)     i = 0 / i = 2 / i = 4 / i = 6
+			if(i ==1)
 			{
-				p = p->link
+				head = delete_first(head);
 			}
-			p = p->link
-			
+			else
+			{
+				ListNode* pre = head; 
+				//지울 대상 설정 
+				for(int j = 2; j < i; j++)
+				{
+					pre = pre->link;
+				}
+				head = delete_delete(head, pre);
+			}	
 		}
-	}
+	} 
 	else
 	{
-		
+		for(int i = 1; i < (count / 2) + 1; i++)
+		{
+			if(i ==1)
+			{
+				head = delete_first(head);
+			}
+			else
+			{
+				ListNode* pre = head; 
+				//지울 대상 설정 
+				for(int j = 2; j < i; j++)
+				{
+					pre = pre->link;
+				}
+				head = delete_delete(head, pre);
+			}	
+		}
+		//홀수일 경우 추가 
+		ListNode* pre = head;
+		for(int i = 1; i < (count/2); i++)
+		{
+			pre = pre->link;
+		}
+		head = delete_delete(head, pre);
 	}
-}
 	
-	ListNode *removed;
-	removed = pre->link; //링크는 노드 그 자체이니깐 removed가 뭔지 알려면 pre->link를 넣어줘야함. 
-	pre->link = removed->link;
+	return head;
+	
+}
+
+int main(void)
+{
+	ListNode* head = NULL;
+	head = insert_first(head, 8);
+	head = insert_first(head, 7);
+	head = insert_first(head, 6);
+	head = insert_first(head, 5);
+	head = insert_first(head, 4);
+	head = insert_first(head, 3);
+	head = insert_first(head, 2);
+	head = insert_first(head, 1);
+	
+	print_list(head);
+	printf("\n");
+//	printf("리스트의 수 : %d\n", count_list(head));
+	
+	/*
+	//head를 직접 타겟해야함 
+	ListNode* removed = head;
+	head = head->link;
+	free(removed);
+	print_list(head);
+	
+	removed = head->link;
+	head->link = head->link->link;
 	free(removed);
 	
-	return head; 
+	print_list(head);
+	*/
+	
 
-
-
-
+	head = odd_remove(head);
+	print_list(head);
+	
+	
+	return 0;
+}
 
