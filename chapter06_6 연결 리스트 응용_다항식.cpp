@@ -35,7 +35,7 @@ typedef struct ListType{
 	int size;
 	ListNode *head;
 	ListNode *tail;
-} ListType;
+};
 
 //오류 함수
 void error(char *message)
@@ -87,7 +87,7 @@ void poly_add(ListType* plist1, ListType* plist2, ListType* plist3)
 	ListNode* b = plist2->head;
 	
 	int sum;
-	
+	//링크의 끝 : NULL 값이 아닐 때까지 진행 
 	while(a && b)
 	{
 		if(a->expon == b->expon)

@@ -807,7 +807,7 @@ int main(void)
 	return 0;	
 } 
 */
-
+/*
 //16.단순 연결 리스트의 헤드 포인터가 주어지면 홀수번 째  노드를 삭제하는 함수를 작성하라. 
 
 #include <stdio.h>
@@ -962,21 +962,22 @@ int main(void)
 	
 	print_list(head);
 	printf("\n");
-//	printf("리스트의 수 : %d\n", count_list(head));
+//debugingr과정 
+////	printf("리스트의 수 : %d\n", count_list(head));
+//	
+//
+//	//head를 직접 타겟해야함 
+//	ListNode* removed = head;
+//	head = head->link;
+//	free(removed);
+//	print_list(head);
+//	
+//	removed = head->link;
+//	head->link = head->link->link;
+//	free(removed);
+//	
+//	print_list(head);
 	
-	/*
-	//head를 직접 타겟해야함 
-	ListNode* removed = head;
-	head = head->link;
-	free(removed);
-	print_list(head);
-	
-	removed = head->link;
-	head->link = head->link->link;
-	free(removed);
-	
-	print_list(head);
-	*/
 	
 
 	head = odd_remove(head);
@@ -985,4 +986,644 @@ int main(void)
 	
 	return 0;
 }
+*/
+/*
+17. 두 개의 단순연결 리스트 A,B가 주어져 있을 경우, alternate 함수를 작성하라. 
+alternate 함수는 A와 B로부터 노드를 번갈아 가져와서 새로운 리스트 C를 만드는 연산이다. 
+만약 입력리스트 중에 하나가 끝나게 되면 나머지 노드를 전부 C로 옮긴다.
+함수를 구현하여 올바르게 동작하는지 테스트하라. 작성된 함수의 시간 복잡도를 구하라. 
 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int element; 
+typedef struct ListNode{
+	element data;
+	struct ListNode *link; 
+} ListNode;
+
+typedef struct ListType {
+	int size;
+	ListNode* head;
+	ListNode* tail;
+}ListType;
+
+ListType* create()
+{
+	ListType* list = (ListType *)malloc(sizeof(ListType));
+	list->size = 0;
+	list->head = NULL;
+	list->tail = NULL;
+	return list;
+}
+
+
+
+//오류 함수
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+} 
+
+void insert_last(ListType *list, element value)
+{
+	ListNode* temp = (ListNode *)malloc(sizeof(ListNode));
+	temp->data = value;
+	temp->link = NULL;
+	
+	if(list->tail == NULL)
+	{
+		list->head = list->tail = temp;
+	}
+	else
+	{
+		list->tail->link = temp;
+		list->tail = temp;
+	}
+	list->size++;
+}
+
+
+
+////list3 = list1 + list2 
+void* alternate(ListType* list1, ListType* list2, ListType* list3)
+{
+	ListNode* head1 = list1->head;
+	ListNode* head2 = list2->head;
+	
+	//링크의 끝 : NULL 값이 아닐 때까지 진행 
+	while(head1 && head2)
+	{
+		//head1 데이터 넣기 
+		insert_last(list3, head1->data);
+		
+		//head2 데이터 넣기 
+		insert_last(list3, head2->data);
+		
+		//head1, head2 다음 노드로 넘어가기 
+		head1 = head1->link;
+		head2 = head2->link;
+	}
+	
+	//a나 b중 하나가 먼저 끝나게 되면 남아있는 항들 ㅁ모두
+	//결과 다항식으로 복사
+	for(;head1 != NULL; head1 = head1->link)  //a가 널이 아닐때까지 
+	{
+		insert_last(list3, head1->data);
+	}	
+	for(;head2 != NULL; head2 = head2->link)
+	{
+		insert_last(list3, head2->data);  	
+	}	
+
+}
+
+void print_list(ListType* list)
+{
+	ListNode* head = list->head;
+	for(; head != NULL; head = head->link)
+	{
+		printf(" | %d | ->", head->data);
+	}
+	printf("\n");
+}
+
+int main(void)
+{
+	ListType *L1 = create();
+	ListType *L2 = create();
+	ListType *L3 = create();
+		
+	//리스트노드 1 
+	insert_last(L1, 12);
+	insert_last(L1, 8);
+	insert_last(L1, 0);
+	
+	//리스트노드 2 
+	insert_last(L2, 2);
+	insert_last(L2, 10);
+	insert_last(L2, 6);
+
+	print_list(L1);
+	print_list(L2);
+	
+	alternate(L1, L2, L3);
+	
+	print_list(L3);
+	
+	
+	return 0;
+}
+*/
+
+/*
+18. 2개의 단순 연결 리스트를 병합하는 함수를 조금 변경해 보자.
+두 개의 연결리스트 a, b가 데이터값의 오름차순으로 노드들이 정렬되어 있는 경우,
+이러한 정렬상태를 유지하면서 합병을 하여 새로운 연결리스트를 만드는 알고리즘 merge를 작성하라.
+a와 b에 있는 노드들은 전부 새로운 연결 리스트로 옮겨진다. 작성된 알고리즘의 시간 복잡도도 구하라.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int element; 
+typedef struct ListNode{
+	element data;
+	struct ListNode *link; 
+} ListNode;
+
+typedef struct ListType {
+	int size;
+	ListNode* head;
+	ListNode* tail;
+}ListType;
+
+ListType* create()
+{
+	ListType* list = (ListType *)malloc(sizeof(ListType));
+	list->size = 0;
+	list->head = NULL;
+	list->tail = NULL;
+	return list;
+}
+
+
+
+//오류 함수
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+} 
+
+void insert_last(ListType *list, element value)
+{
+	ListNode* temp = (ListNode *)malloc(sizeof(ListNode));
+	temp->data = value;
+	temp->link = NULL;
+	
+	if(list->tail == NULL)
+	{
+		list->head = list->tail = temp;
+	}
+	else
+	{
+		list->tail->link = temp;
+		list->tail = temp;
+	}
+	list->size++;
+}
+
+
+
+////list3 = list1 + list2 
+void* alternate(ListType* list1, ListType* list2, ListType* list3)
+{
+	ListNode* head1 = list1->head;
+	ListNode* head2 = list2->head;
+	
+	//링크의 끝 : NULL 값이 아닐 때까지 진행 
+	while(head1 && head2)
+	{
+		//head1 데이터 넣기 
+		insert_last(list3, head1->data);
+		
+		//head2 데이터 넣기 
+		insert_last(list3, head2->data);
+		
+		//head1, head2 다음 노드로 넘어가기 
+		head1 = head1->link;
+		head2 = head2->link;
+	}
+	
+	//a나 b중 하나가 먼저 끝나게 되면 남아있는 항들 ㅁ모두
+	//결과 다항식으로 복사
+	for(;head1 != NULL; head1 = head1->link)  //a가 널이 아닐때까지 
+	{
+		insert_last(list3, head1->data);
+	}	
+	for(;head2 != NULL; head2 = head2->link)
+	{
+		insert_last(list3, head2->data);  	
+	}	
+	
+}
+
+void* merge(ListType* list1, ListType* list2, ListType* list3)
+{
+	ListNode* head1 = list1->head;
+	ListNode* head2 = list2->head;
+	
+	//링크의 끝 : NULL 값이 아닐 때까지 진행 
+	while(head1 && head2)
+	{
+		//head1의 데이터가 더 큰 경우 
+		if(head1->data > head2->data)
+		{
+			insert_last(list3, head2->data);
+			insert_last(list3, head1->data);
+		}
+		else if(head1->data < head2->data)
+		{
+			insert_last(list3, head1->data);
+			insert_last(list3, head2->data);
+		}
+		//head1, head2 다음 노드로 넘어가기 
+		head1 = head1->link;
+		head2 = head2->link;
+	}
+	
+	//a나 b중 하나가 먼저 끝나게 되면 남아있는 항들 ㅁ모두
+	//결과 다항식으로 복사
+	for(;head1 != NULL; head1 = head1->link)  //a가 널이 아닐때까지 
+	{
+		insert_last(list3, head1->data);
+	}	
+	for(;head2 != NULL; head2 = head2->link)
+	{
+		insert_last(list3, head2->data);  	
+	}	
+	
+}
+void print_list(ListType* list)
+{
+	ListNode* head = list->head;
+	for(; head != NULL; head = head->link)
+	{
+		printf(" | %d | ->", head->data);
+	}
+	printf("\n");
+}
+
+int main(void)
+{
+	ListType *L1 = create();
+	ListType *L2 = create();
+	ListType *L3 = create();
+		
+	//리스트노드 1 
+	insert_last(L1, 0);
+	insert_last(L1, 8);
+	insert_last(L1, 12);
+	
+	//리스트노드 2 
+	insert_last(L2, 2);
+	insert_last(L2, 6);
+	insert_last(L2, 10);
+
+	print_list(L1);
+	print_list(L2);
+	
+	merge(L1, L2, L3);
+	
+	print_list(L3);
+	
+	
+	return 0;
+}
+*/
+/*
+19. 단순 연결 리스트 C를 두 개의 단순 연결 리스트 A와 B로 분리하는 함수 split을 작성하여 보자.
+C의 홀수 번째 노드들읜 모두 A로 이동되고 짝수 번째 노드들은 모두 B로 이동된다.
+이 함수가 C를 변경하여서는 안된다. 작성된 알고리즘의 시간 복잡도를 구하고 구현하여 수행하여 보라.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int element; 
+typedef struct ListNode{
+	element data;
+	struct ListNode *link; 
+} ListNode;
+
+typedef struct ListType {
+	int size;
+	ListNode* head;
+	ListNode* tail;
+}ListType;
+
+ListType* create()
+{
+	ListType* list = (ListType *)malloc(sizeof(ListType));
+	list->size = 0;
+	list->head = NULL;
+	list->tail = NULL;
+	return list;
+}
+
+
+
+//오류 함수
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+} 
+
+void insert_last(ListType *list, element value)
+{
+	ListNode* temp = (ListNode *)malloc(sizeof(ListNode));
+	temp->data = value;
+	temp->link = NULL;
+	
+	if(list->tail == NULL)
+	{
+		list->head = list->tail = temp;
+	}
+	else
+	{
+		list->tail->link = temp;
+		list->tail = temp;
+	}
+	list->size++;
+}
+
+
+
+////list3 = list1 + list2 
+void* alternate(ListType* list1, ListType* list2, ListType* list3)
+{
+	ListNode* head1 = list1->head;
+	ListNode* head2 = list2->head;
+	
+	//링크의 끝 : NULL 값이 아닐 때까지 진행 
+	while(head1 && head2)
+	{
+		//head1 데이터 넣기 
+		insert_last(list3, head1->data);
+		
+		//head2 데이터 넣기 
+		insert_last(list3, head2->data);
+		
+		//head1, head2 다음 노드로 넘어가기 
+		head1 = head1->link;
+		head2 = head2->link;
+	}
+	
+	//a나 b중 하나가 먼저 끝나게 되면 남아있는 항들 ㅁ모두
+	//결과 다항식으로 복사
+	for(;head1 != NULL; head1 = head1->link)  //a가 널이 아닐때까지 
+	{
+		insert_last(list3, head1->data);
+	}	
+	for(;head2 != NULL; head2 = head2->link)
+	{
+		insert_last(list3, head2->data);  	
+	}	
+	
+}
+
+void* merge(ListType* list1, ListType* list2, ListType* list3)
+{
+	ListNode* head1 = list1->head;
+	ListNode* head2 = list2->head;
+	
+	//링크의 끝 : NULL 값이 아닐 때까지 진행 
+	while(head1 && head2)
+	{
+		//head1의 데이터가 더 큰 경우 
+		if(head1->data > head2->data)
+		{
+			insert_last(list3, head2->data);
+			insert_last(list3, head1->data);
+		}
+		else if(head1->data < head2->data)
+		{
+			insert_last(list3, head1->data);
+			insert_last(list3, head2->data);
+		}
+		//head1, head2 다음 노드로 넘어가기 
+		head1 = head1->link;
+		head2 = head2->link;
+	}
+	
+	//a나 b중 하나가 먼저 끝나게 되면 남아있는 항들 ㅁ모두
+	//결과 다항식으로 복사
+	for(;head1 != NULL; head1 = head1->link)  //a가 널이 아닐때까지 
+	{
+		insert_last(list3, head1->data);
+	}	
+	for(;head2 != NULL; head2 = head2->link)
+	{
+		insert_last(list3, head2->data);  	
+	}	
+	
+}
+void print_list(ListType* list)
+{
+	ListNode* head = list->head;
+	for(; head != NULL; head = head->link)
+	{
+		printf(" | %d | ->", head->data);
+	}
+	printf("\n");
+}
+
+// | 0 | -> | 2 | -> | 6 | -> | 8 | -> | 10 | -> | 12 | ->
+void split(ListType* list1, ListType* listA, ListType* listB)
+{
+	ListNode* head1 = list1->head;
+	int size = list1->size;
+	
+	for(int i = 1; i < size + 1; i++)
+	{
+		if( (i % 2) != 0)
+		{
+			insert_last(listA, head1->data);
+		}
+		else
+		{
+			insert_last(listB, head1->data);
+		}
+		head1 = head1->link;
+	}
+}
+
+int main(void)
+{
+	ListType *L1 = create();
+	ListType *L2 = create();
+	ListType *L3 = create();
+		
+	//리스트노드 1 
+	insert_last(L1, 0);
+	insert_last(L1, 8);
+	insert_last(L1, 12);
+	
+	//리스트노드 2 
+	insert_last(L2, 2);
+	insert_last(L2, 6);
+	insert_last(L2, 10);
+
+	merge(L1, L2, L3);
+	
+	print_list(L3);
+	
+	ListType* La = create();
+	ListType* Lb = create();
+	
+	split(L3, La, Lb);
+	printf("La : \n");
+	print_list(La);
+	printf("Lb : \n");
+	print_list(Lb);
+	
+	
+	return 0;
+}
+*/ 
+
+/*
+20. 두개의 다항식이 다음과 같이 주어졌다. 
+이들을 연결 리스트를 이용하여 나타내고 본문의 프로그램을 이용하여 두 다항식의 합을 구해보시오.
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct ListNode{
+	int coef; //계수 
+	int expon; //지수
+	struct ListNode *link; 
+} ListNode;
+
+//연결리스트 헤더
+typedef struct ListType{
+	int size;
+	ListNode *head;
+	ListNode *tail;
+};
+
+//오류 함수
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+} 
+
+//리스트 헤더 생성 함수 :초기화 함수와 같은 용도로 사용.
+ListType* create() //연결리스트 헤더를 만들어서 반환함으로 ListType* 를 변수형태로 사용 
+{
+	ListType *plist = (ListType *)malloc(sizeof(ListType));
+	plist->size = 0;
+	plist->head = plist->tail = NULL;
+	return plist; 
+}
+
+//plist의 존재에 유의하자
+void insert_last(ListType* plist, int coef, int expon)
+{
+	ListNode *temp = (ListNode *)malloc(sizeof(ListNode));
+	if(temp == NULL)
+	{
+		error("메모리 할당 에러");
+	}
+	else
+	{
+		temp->coef = coef;
+		temp->expon = expon;
+		temp->link = NULL;
+	}
+	
+	if(plist->tail == NULL)
+	{
+		plist->head = plist->tail = temp;
+	}
+	else
+	{
+		plist->tail->link = temp; //마지막 링크 자리에 
+		plist->tail = temp;
+	}
+	plist->size ++;		
+}
+
+//list3 = list1 + list2 
+void poly_add(ListType* plist1, ListType* plist2, ListType* plist3)
+{
+	ListNode* a = plist1->head;
+	ListNode* b = plist2->head;
+	
+	int sum;
+	//링크의 끝 : NULL 값이 아닐 때까지 진행 
+	while(a && b)
+	{
+		if(a->expon == b->expon)
+		{
+			sum = a->coef + b->coef;
+			if(sum != 0)
+			{
+				insert_last(plist3, sum, a->expon);
+			}
+			a = a->link;
+			b = b->link;
+		}
+		else if(a->expon > b->expon)
+		{
+			insert_last(plist3, a->coef, a->expon);
+			a = a->link;
+		}
+		else
+		{
+			insert_last(plist3, b->coef, b->expon);
+			b = b->link; // 이해가 더 필요한 부분 위 a와 같이 
+		}
+	}
+	
+	//a나 b중 하나가 먼저 끝나게 되면 남아있는 항들 ㅁ모두
+	//결과 다항식으로 복사
+	for(;a != NULL; a = a->link)  //a가 널이 아닐때까지 
+	{
+		insert_last(plist3, a->coef,a->expon);
+	}	
+	for(;b != NULL; b = b->link)
+	{
+		insert_last(plist3, b->coef, b->expon);  	
+	}	
+}
+
+//
+//
+void poly_print(ListType* plist)
+{
+	ListNode *p = plist -> head;
+	
+	printf("polynomial = ");
+	for(;p; p = p->link)
+		printf("%dx^%d + ", p->coef, p->expon );
+		printf("\n"); 
+}
+
+int main(void)
+{
+	ListType *list1, *list2, *list3;
+	
+	//연결리스트 헤더 생성
+	list1 = create();
+	list2 = create();
+	list3 = create() ;
+	
+	//다항식 1 생성 
+	insert_last(list1, 3, 6);
+	insert_last(list2, 7, 3);
+	insert_last(list1, -2, 2);
+	insert_last(list1, -9, 0);
+	
+	//다항식 2 생성 
+	insert_last(list2, -2, 6);
+	insert_last(list2, -4, 4);
+	insert_last(list2, 6, 2);
+	insert_last(list2, 6, 1);
+	insert_last(list2, 1, 0);
+	
+	
+	poly_print(list1);
+	poly_print(list2);
+	
+	//다항식 3 = 다항식 1+다항식2
+	poly_add(list1, list2, list3);
+	poly_print(list3);
+	
+
+	return 0;
+} 
+*/
