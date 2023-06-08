@@ -1627,3 +1627,209 @@ int main(void)
 	return 0;
 } 
 */
+
+/* 21. 배열을 이용하여 숫자들을 입력 받아 항상 오름차순으로 정렬된 상태로 유지하는 리스트 SortedList를 구현하여 보라.
+다음 연산들을 구현하면 된다.
+add(list, item) :: = 정렬된 리스트에 요소를 추가한다.
+delete(list, item) ::= 정렬된 리스트에서 item을 제거한다.
+clear(list) ::= 리스트의 모든 요소를 제거한다.
+is_in_list(list,item) ::= item이 리스트안에 있는지를 검사한다.
+get_length(list) ::= 리스트의 길이를 구한다.
+is_empty(list) ::= 리스트가 비어있는지를 검사한다.
+is_full(list) ::= 리스트가 꽉찼는지를 검사한다.
+display(list) ::= 리스트의 모든 요소를 표시한다. 
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_LIST_SIZE 100 //리스트의 최대 크기
+
+typedef int element; //항목의 정의
+typedef struct{
+	element array[MAX_LIST_SIZE]; //배열의 정의
+	int size; // 현재 리스트에 저장된 항목들의 개수 
+} ArrayListType;
+
+
+//*기초연산 : 모든 연산은 구조체 포인터로 바든다. 포인터로 받는 이유는
+//함수 안에서 구조체를 변경할 필요도 있기 때문이다. 
+//구조체를 변화시킬 때 포인터 사용 안하면 복사본만 전달되어 변경 불가.
+
+//오류 처리 함수
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+} 
+
+//리스트 초기화 함수
+void init(ArrayListType *L)
+{
+	L->size = 0;
+} 
+
+//리스트 공백 확인 함수 
+int is_empty(ArrayListType *L)
+{
+	return L->size == 0;
+}
+
+//리스트 포화 확인 함수
+int is_full(ArrayListType *L)
+{
+	return L->size == MAX_LIST_SIZE; //스택, 선형 큐와 다르게 데이터가 없을 때 위치 0이다. 
+}
+
+//pos 요소 값 반환 
+element get_entry(ArrayListType *L, int pos)
+{
+	if(pos < 0 || pos >= L->size)
+	{
+		error("위치 오류");
+	}
+	else
+	{
+		return L->array[pos];
+	}
+}
+
+//리스트 출력
+void print_list(ArrayListType *L)
+{
+	int i;
+	for(i = 0; i < L->size; i++)
+	{
+		printf("%d->",L->array[i]);
+	}
+	printf("\n"); 
+} 
+
+//*항목 추가 연산
+void insert_last(ArrayListType *L, element item)
+{
+	if(L->size >= MAX_LIST_SIZE)
+	{
+		error("리스트 오버플로우"); 
+	}
+	else
+	{
+		L->array[L->size++] = item;
+	} 
+} 
+
+//pos 위치에 새로운 항목 추가할 경우
+void insert(ArrayListType *L, int pos, element item)
+{
+	if(!is_full(L) && (pos >= 0) && (pos <= L->size))
+	{
+		for(int i = (L->size - 1); i >= pos; i--)
+		{
+			L->array[i+1] = L->array[i];
+		}
+		L->array[pos] = item;
+		L->size++;
+	}
+}
+
+//*항목 삭제 연산 
+element delete_list(ArrayListType *L, int pos)
+{
+	element item;
+	
+	if(pos < 0 || pos >= L->size) //L->size는 공백인 위치니깐
+	{
+		error("위치 오류");	
+	}
+	else
+	{
+		item = L->array[pos];
+		for(int i = pos; i<(L->size- 1); i++)
+		{
+			L->array[i] = L->array[i+1]; // 맨 마지막 위치는 가지오 오는 값이 없으니깐 
+		}
+		L->size--;
+		return item; 
+	} 
+}
+
+void replace(ArrayListType *L, int pos, element item)
+{
+	if(pos < 0 || pos >= L->size)
+	{
+		error("위치 오류");
+	}
+	else
+	{
+		L->array[pos] = item;
+	} 
+}
+
+int get_length(ArrayListType *L)
+{
+	return L->size;
+}
+
+void insert_first(ArrayListType *L, element item)
+{
+	if(!is_empty(L))
+	{
+		for(int i = L->size; i > 0; i--)
+		{
+			L->array[i] = L->array[i-1];
+		}
+		L->array[0] = item;
+		L->size ++;
+	}
+}
+//sortedList 함수 구현 
+void add(ArrayListType *L, element item)
+{
+//	printf("debug>>>> L->size : %d\n", L->size);
+	int pos;
+	if(!is_empty(L))
+	{
+		for(int i = L->size - 1; i >= 0; i--) // !!! 중요 두 번째 항목은 범위로 지정해줘야 한다. 
+		{
+			printf("debug>>>> i : %d\n", i);
+//			printf("debug>>>> data : %d\n", L->array[i]);
+			if(L->array[i] <= item)
+			{
+				pos = i + 1;
+			}
+//			break; 이렇게 하면 첫 번째에서 끝내 버리지	
+		}
+//		printf("debug>>>>pos : %d\n", pos);	
+		insert(L, pos, item);	
+	} 
+}
+
+
+void delete_sort(ArrayListType *L, element item)
+{
+	int pos;
+	for(int i = 0; i < L->size; i++)
+	{
+		if(L->array[i] == item)
+		{
+			pos = i;
+		}
+	}
+	delete_list(L, pos);
+}
+int main(void)
+{
+	ArrayListType list;
+	init(&list);
+	insert_last(&list, 3);
+	insert_last(&list, 10);
+	insert_last(&list, 13);
+	print_list(&list);
+
+	delete_sort(&list, 10);
+	print_list(&list);
+	
+	return 0;
+}
+*/
+
