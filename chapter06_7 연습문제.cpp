@@ -1833,3 +1833,147 @@ int main(void)
 }
 */
 
+/*
+23. 단순 연결 리스트를 이용하여 숫자들을 항상 오름차순으로 정렬된 상태로 유지하는 리스트 SortedList를 구현하여 보라.
+앞의 문제의 연산들을 구현하면 된다.
+
+add(list, item) :: = 정렬된 리스트에 요소를 추가한다.
+delete(list, item) ::= 정렬된 리스트에서 item을 제거한다.
+clear(list) ::= 리스트의 모든 요소를 제거한다.
+is_in_list(list,item) ::= item이 리스트안에 있는지를 검사한다.
+get_length(list) ::= 리스트의 길이를 구한다.
+is_empty(list) ::= 리스트가 비어있는지를 검사한다.
+is_full(list) ::= 리스트가 꽉찼는지를 검사한다.
+display(list) ::= 리스트의 모든 요소를 표시한다. 
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef int element;
+typedef struct ListNode{
+	element data;
+	struct ListNode *link;
+} ListNode;
+
+//오류 처리 함수 
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+}
+
+//첫행에 노드 삽입
+ListNode* insert_first(ListNode *head, int value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = head; //head 자체는 포인터이기 때문에 head->link라고 하지 않는다. 
+	head = p; //head 자체를 listnode p가 대신한다.
+	return head; 
+}
+
+//노드 pre 뒤에 새로운 노드 삽입
+ListNode* insert(ListNode *head, ListNode *pre, element value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = pre->link;
+	pre->link = p; //포인터 자리에 이제 새로운 노드를 넣어주는 것. 
+	return head; 
+} 
+
+ListNode* delete_first(ListNode *head)
+{
+	ListNode *removed;
+	if(head==NULL)
+	{
+		return NULL;
+	}
+	else
+	{
+		removed = head; //노드 removed 자리에 포인터인 head를 넣어준다.
+		head = removed->link;
+		free(removed);
+		return head; 
+	}
+}
+
+ListNode* delete_delete(ListNode *head, ListNode *pre)
+{
+	ListNode *removed;
+	removed = pre->link; //노드 그 자체는 포인터와 같다.
+	pre->link = removed->link;
+	free(removed);
+	return head;
+}
+
+void print_list(ListNode *head)
+{
+	for(ListNode *p = head; p != NULL; p=p->link) //새로운 링크 자리의 주소값이 비어있지 않다면 
+	{
+		printf("%d->",p->data);
+	}
+	printf("NULL \n");
+} 
+
+ListNode * add(ListNode *head, element item)
+{
+	ListNode *p = head;
+	if(head == NULL)
+	{
+		
+		insert_first(head, item);
+	}
+	else
+	{
+		
+//		for(ListNode *p = head; p != NULL p = p->link)
+//		{
+//			if(p->data == item)
+//			{
+//				insert(head, p, item);
+//				break;
+//			}
+//			else if(p->data < item)
+//			{	
+//				insert(head, p, item);
+//				break;
+//			}
+//		}
+//		insert(head, p, item);
+		if(item < head->data)
+		{
+//			printf(">>>>>debug : %d\n",item);
+			insert_first(head, item);
+		}
+		else
+		{
+			for(ListNode *p = head; (p->data) < item; p = p->link)
+			{
+//			printf(">>>>>debug : %d",p->data);
+				insert(head,p,item);
+				break;
+			}
+		
+		}
+
+	}
+}
+
+int main(void)
+{
+	ListNode *head = NULL;
+	
+	head = add(head, 3);
+	print_list(head);
+	head = add(head, 5);
+	print_list(head);
+	head = add(head, 4);
+	print_list(head);
+	
+	head = add(head, 1);
+	print_list(head);
+	
+	return 0;
+}
