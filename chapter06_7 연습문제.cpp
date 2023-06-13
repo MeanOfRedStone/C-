@@ -1845,7 +1845,7 @@ get_length(list) ::= 리스트의 길이를 구한다.
 is_empty(list) ::= 리스트가 비어있는지를 검사한다.
 is_full(list) ::= 리스트가 꽉찼는지를 검사한다.
 display(list) ::= 리스트의 모든 요소를 표시한다. 
-*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -1919,7 +1919,6 @@ void print_list(ListNode *head)
 
 ListNode * add(ListNode *head, element item)
 {
-	ListNode *p = head;
 	if(head == NULL)
 	{
 		
@@ -1928,20 +1927,7 @@ ListNode * add(ListNode *head, element item)
 	else
 	{
 		
-//		for(ListNode *p = head; p != NULL p = p->link)
-//		{
-//			if(p->data == item)
-//			{
-//				insert(head, p, item);
-//				break;
-//			}
-//			else if(p->data < item)
-//			{	
-//				insert(head, p, item);
-//				break;
-//			}
-//		}
-//		insert(head, p, item);
+
 		if(item < head->data)
 		{
 //			printf(">>>>>debug : %d\n",item);
@@ -1949,31 +1935,58 @@ ListNode * add(ListNode *head, element item)
 		}
 		else
 		{
-			for(ListNode *p = head; (p->data) < item; p = p->link)
-			{
-//			printf(">>>>>debug : %d",p->data);
-				insert(head,p,item);
-				break;
+			ListNode *p = head;
+//			printf(">>>>debug p 처음 : %d\n",p->data);
+			for(; (p->link->data) < item; p = p->link)
+			{	
+//				printf(">>>>>debug p for loop : %d\n",p->data);
+			
 			}
+//			printf(">>>>>>debug p 탈출 후 : %d\n", p->data);
+			insert(head,p,item);
 		
 		}
 
 	}
 }
 
+ListNode * delete_sortedList(ListNode *head, element item)
+{
+	if(head == NULL){
+	}
+	ListNode*p = head;
+	for(p;p->link->data < item ; p = p->link){
+		
+	}
+//	printf(">>>>>>debug 탈출 후  p->data : %d\n", p->data);
+	delete_delete(head, p);
+	
+	
+}
+
 int main(void)
 {
 	ListNode *head = NULL;
 	
-	head = add(head, 3);
-	print_list(head);
-	head = add(head, 5);
-	print_list(head);
-	head = add(head, 4);
-	print_list(head);
 	
-	head = add(head, 1);
+	head = insert_first(head, 10);
+	print_list(head);
+	printf("================\n"); 
+	head = insert_first(head, 8);
+	print_list(head);
+	printf("================\n"); 
+	head = insert_first(head, 6);
+	print_list(head);
+	printf("================\n"); 
+	head = insert_first(head, 2);
+	print_list(head);
+	printf("================\n"); 
+	head = add(head, 7);
+	print_list(head); 
+	head = delete_sortedList(head, 7);
 	print_list(head);
 	
 	return 0;
 }
+*/
+
