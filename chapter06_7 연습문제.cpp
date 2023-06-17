@@ -1990,3 +1990,19 @@ int main(void)
 }
 */
 
+/*
+24. 행렬은 숫자나 문자를 정사각형 또는 직사각형으로 배열하여 그 양끝을 괄호로 묶은 것으로 많은 문제를 수학적으로 해결하는 도구이다.
+희소 행렬은 많은 항들이 0인 행렬이다. 연결 리스트를 이용하여 희소 행렬을 표현하는 방법을 생각하여 보고 구현하라. 
+
+typedef struct{
+	int row;
+	int col;
+	int data;
+}element;
+
+typedef struct ListNode{
+	element data;
+	struct ListNode * link;
+}ListNode;
+*/
+
