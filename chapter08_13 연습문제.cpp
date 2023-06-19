@@ -95,10 +95,11 @@ NULL - 6 - 4 - 9 - 2 - 5 - 7 - 10 - 1 - 3 - NULL - NULL - NULL - NULL - 8 - 11
 3 | 5 | 1 | 4 | 2 | 8 | 6
 
 ->정답: 말단노드부터 최대값을 반영한다. 따라서 8
-
+*/
+/*
 13. 이진 트리의 서브트리 높이가 최대 1차이나는 트리를 "균형 트리(balanced tree)"라고 한다.
 주어진 이진 트리가 균형 트리인지를 검사하는 함수 isBalanced()를 작성하고 테스트하라.
-*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
@@ -201,5 +202,321 @@ int main(void)
 		printf("균형트리가 아닙니다.");
 	}
 	
+	return 0;
+}
+*/
+
+/*
+14. 주어진 이진트리에서 노드가 가지고 있는 값의 합을 계산하는 프로그램을 작성해보자. 
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <memory.h> 
+typedef struct TreeNode {
+	int data;
+	struct TreeNode *left, *right;
+}TreeNode;
+
+int inorder_sum(TreeNode * root)
+{
+	int sum = 0;
+	if(root != NULL){
+		printf("더해지는 값 : %d\n", root->data);
+		sum = inorder_sum(root->left) + root->data + inorder_sum(root->right);
+	}
+	
+	return sum;
+}
+
+int main(void)
+{
+	TreeNode *n1 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n2 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n3 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n4 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n5 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n6 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n7 = (TreeNode *)malloc(sizeof(TreeNode));
+	
+	n1->data = 1;
+	n1->left = n2;
+	n1->right = n3;
+	
+	n2->data = 2;
+	n2->left = n4;
+	n2->right = n5;
+	
+	n3->data = 3;
+	n3->left = n6;
+	n3->right = n7;
+	 
+	n4->data = 4;
+	n4->left = NULL;
+	n4->right = NULL;
+	
+	n5->data = 5;
+	n5->left = NULL;
+	n5->right = NULL;
+	
+	n6->data = 6;
+	n6->left = NULL;
+	n6->right = NULL;
+	
+	n7->data = 7;
+	n7->left = NULL;
+	n7->right = NULL; 
+	
+	printf("총합 : %d", inorder_sum(n1));
+	
+
+	return 0;
+}
+*/
+
+/*
+15. 주어진 이진트리에서 노드가 가지고 있는 값이 주어진 value보다 작으면 노드의 값을 출력하는 프로그램을 작성해보자. 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+
+typedef struct TreeNode{
+	int data;
+	struct TreeNode *left, *right;
+}TreeNode;
+
+void inorder_condition(TreeNode * root, int value)
+{
+	if(root != NULL){
+		inorder_condition(root->left, value);
+		if(root->data < value){
+			printf("조건 만족 : %d\n", root->data);
+		} 
+		inorder_condition(root->right, value);
+	}	
+} 
+int main(void)
+{
+	TreeNode *n1 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n2 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n3 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n4 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n5 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n6 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n7 = (TreeNode *)malloc(sizeof(TreeNode));
+	
+	n1->data = 1;
+	n1->left = n2;
+	n1->right = n3;
+	
+	n2->data = 2;
+	n2->left = n4;
+	n2->right = n5;
+	
+	n3->data = 3;
+	n3->left = n6;
+	n3->right = n7;
+	 
+	n4->data = 4;
+	n4->left = NULL;
+	n4->right = NULL;
+	
+	n5->data = 5;
+	n5->left = NULL;
+	n5->right = NULL;
+	
+	n6->data = 6;
+	n6->left = NULL;
+	n6->right = NULL;
+	
+	n7->data = 7;
+	n7->left = NULL;
+	n7->right = NULL; 
+	
+	int value = 6;
+	printf("조건 value : %d\n", value);
+	inorder_condition(n1, value);
+	
+	
+
+	return 0;
+}
+*/
+
+/*
+16. 주어진 이진 트리에서 자식이 하나만 있는 노드의 개수를 반환하는 함수를 작성하라. 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct TreeNode{
+	int data;
+	struct TreeNode *left, *right;
+}TreeNode;
+
+int odd_leafNode_count(TreeNode * root)
+{
+	//순환 호출 계속하며 나오는 값을 더하기 위해서는 순환 호출 자체를 더하기 형식으로 해야 반환값이 저장됨 
+	int cnt = 0;
+	if(root != NULL){
+		if(root->left == NULL && root->right != NULL){
+			cnt = 1 + odd_leafNode_count(root->right);
+		}
+		else if(root->right == NULL && root->left != NULL){
+			cnt = 1 + odd_leafNode_count(root->left);
+		}
+		else{
+			cnt = odd_leafNode_count(root->left) + 0 + odd_leafNode_count(root->right);
+		}
+		
+	}
+	return cnt;	
+} 
+
+int main(void)
+{
+	TreeNode *n1 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n2 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n3 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n4 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n5 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n6 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n7 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n8 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n10 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n15 = (TreeNode *)malloc(sizeof(TreeNode));
+	n1->data = 1;
+	n1->left = n2;
+	n1->right = n3;
+	
+	n2->data = 2;
+	n2->left = n4;
+	n2->right = n5;
+	
+	n3->data = 3;
+	n3->left = n6;
+	n3->right = n7;
+	 
+	n4->data = 4;
+	n4->left = n8;
+	n4->right = NULL;
+	
+	n5->data = 5;
+	n5->left = n10;
+	n5->right = NULL;
+	
+	n6->data = 6;
+	n6->left = NULL;
+	n6->right = NULL;
+	
+	n7->data = 7;
+	n7->left = NULL;
+	n7->right = n15; 
+	
+	n8->data = 8;
+	n8->left = NULL;
+	n8->right = NULL;
+	
+	n10->data = 10;
+	n10->left = NULL;
+	n10->right = NULL;
+	
+	n15->data = 15;
+	n15->left = NULL;
+	n15->right = NULL;
+	
+	printf("자식이 하나만 있는 노드의 개수 : %d", odd_leafNode_count(n1));
+	
+	
+
+	return 0;
+}
+*/
+
+/*
+17. 일반 이진 트리에서 최대값과 최소값을 탐색하기 위한 함수를 작성하라. 이진 탐색 트리가 아니다.
+*/
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX -99999
+#define MIN 99999
+typedef struct TreeNode{
+	int data;
+	struct TreeNode *left, *right;
+}TreeNode;
+
+int max_min_find(TreeNode * root)
+{
+	if(root != NULL){
+		max_min_find(root->left);
+		if(root->data > max){
+			MAX = root->data;
+		}
+		if(root->data < min){
+			MIN = root->data;
+		}
+		max_min_find(root->right);
+	}
+	
+	return MAX, MIN;
+} 
+
+int main(void)
+{
+	TreeNode *n1 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n2 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n3 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n4 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n5 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n6 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n7 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n8 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n10 = (TreeNode *)malloc(sizeof(TreeNode));
+	TreeNode *n15 = (TreeNode *)malloc(sizeof(TreeNode));
+	n1->data = 1;
+	n1->left = n2;
+	n1->right = n3;
+	
+	n2->data = 2;
+	n2->left = n4;
+	n2->right = n5;
+	
+	n3->data = 3;
+	n3->left = n6;
+	n3->right = n7;
+	 
+	n4->data = 4;
+	n4->left = n8;
+	n4->right = NULL;
+	
+	n5->data = 120;
+	n5->left = n10;
+	n5->right = NULL;
+	
+	n6->data = 6;
+	n6->left = NULL;
+	n6->right = NULL;
+	
+	n7->data = 7;
+	n7->left = NULL;
+	n7->right = n15; 
+	
+	n8->data = 8;
+	n8->left = NULL;
+	n8->right = NULL;
+	
+	n10->data = 10;
+	n10->left = NULL;
+	n10->right = NULL;
+	
+	n15->data = 15;
+	n15->left = NULL;
+	n15->right = NULL;
+	
+	printf("최대값 : %d , 최소값 : %d\n", MAX, MIN);
+	
+	
+
 	return 0;
 }
