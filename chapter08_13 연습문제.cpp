@@ -439,27 +439,53 @@ int main(void)
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX -99999
-#define MIN 99999
 typedef struct TreeNode{
 	int data;
 	struct TreeNode *left, *right;
 }TreeNode;
 
-int max_min_find(TreeNode * root)
+
+//순환반복은 마지막까지 간 것을 고려해서 계산해야한다. 여기서는 중위 후위 전위 이런 건 아닌 듯? 
+int max_find(TreeNode * root)
 {
+	int max = -9999;
+	//HINT : 순환 호출을 이용하라 
 	if(root != NULL){
-		max_min_find(root->left);
-		if(root->data > max){
-			MAX = root->data;
+		
+		if( max_find(root->left) >= root->data && max_find(root->left) >= max_find(root->right)){
+			max = max_find(root->left);
 		}
-		if(root->data < min){
-			MIN = root->data;
+		else if( root->data >= max_find(root->left) && root->data >= max_find(root->right)){
+			max = root->data;
 		}
-		max_min_find(root->right);
+		else if( max_find(root->right) >= root->data && max_find(root->right) >= max_find(root->left)){
+			max = max_find(root->right);
+		}
+//		printf("debug : 노드%d 동작최대값 : %d\n", root->data, max);
 	}
 	
-	return MAX, MIN;
+	return max;
+} 
+
+int min_find(TreeNode * root)
+{
+	int min = 9999;
+	//HINT : 순환 호출을 이용하라 
+	if(root != NULL){
+		
+		if( min_find(root->left) <= root->data && min_find(root->left) <= min_find(root->right)){
+			min = min_find(root->left);
+		}
+		else if( root->data <= min_find(root->left) && root->data <= min_find(root->right)){
+			min = root->data;
+		}
+		else if( min_find(root->right) > root->data && min_find(root->right) > min_find(root->left)){
+			min = min_find(root->right);
+		}
+//		printf("debug : 노드%d 동작최대값 : %d\n", root->data, max);
+	}
+	
+	return min;
 } 
 
 int main(void)
@@ -514,7 +540,7 @@ int main(void)
 	n15->left = NULL;
 	n15->right = NULL;
 	
-	printf("최대값 : %d , 최소값 : %d\n", MAX, MIN);
+	printf("최대값 : %d 최솟값: %d \n", max_find(n1), min_find(n1));
 	
 	
 
