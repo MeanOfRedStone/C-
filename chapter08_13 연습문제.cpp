@@ -435,7 +435,7 @@ int main(void)
 
 /*
 17. 일반 이진 트리에서 최대값과 최소값을 탐색하기 위한 함수를 작성하라. 이진 탐색 트리가 아니다.
-*/
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -544,5 +544,634 @@ int main(void)
 	
 	
 
+	return 0;
+}
+*/
+
+/*
+18. 숫자들이 들어 있는 이진 탐색 트리를 중위 순회하면 정렬된 숫자가 얻어진다.
+이를 이용하여 다음 배열에 들어있는 숫자들을 정렬시키는 함수를 작성하여 보라.
+배열에 들어 있는 숫자들을 이진 탐색 트리에 추가한 후에 트리를 중위 순회하면서 숫자들을 출력한다.
+단 숫자들은 중복되지 않는다고 가정하자.
+idx: 0 											 10
+	 11 | 3 | 4 | 1 | 56 | 5 | 6 | 2 | 98 | 32 | 23 | 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int element;
+typedef struct TreeNode{
+	element key;
+	struct TreeNode *left, *right;
+}TreeNode;
+
+//순환적인 탐색함수 
+TreeNode * search(TreeNode * node, int key)
+{
+	if(node == NULL){
+		return NULL;
+	}
+	if(key == node->key){
+		return node;
+	}
+	else if(key < node->key){
+		return search(node->left, key);
+	}
+	else{
+		return search(node->right, key);
+	}
+}
+
+TreeNode * new_node(int item)
+{
+	TreeNode * temp = (TreeNode *)malloc(sizeof(TreeNode));
+	temp->key = item;
+	temp->right = temp->left = NULL;
+	return temp;
+}
+
+TreeNode * insert_node(TreeNode * node, int key)
+{
+	//트리가 공백이면 새로운 노드를 반환
+	if(node == NULL){
+		return new_node(key);
+	} 
+	//탐색이 실패로 끝난 그 지점이 새로운 노드 값이 들어오는 지점이다. NULL 인 곳은 순환에 의해 new_node(key) 
+	if(key < node->key){
+		node->left = insert_node(node->left,key);
+	}
+	else if(key > node->key){
+		node->right = insert_node(node->right, key);
+	}
+	//변경된 루트 포인터를 반환한다. 
+	return node;
+}
+
+TreeNode * min_value_node(TreeNode * node)
+{
+	TreeNode * current = node;
+	
+	//여기서는 매개변수로 root->right을 받고 그 맨 왼쪽 단말 노드를 찾으로 내려감 
+	while(current->left != NULL){
+		current = current->left;
+	} 
+	
+	return current;
+}
+
+//이진 탐색 트리와 키가 주어지면 저장된 노들르 삭제하고
+//새로운 루트 노드를 반환한다.
+TreeNode * delete_node(TreeNode * root, int key)
+{
+	if(root == NULL){
+		return root;
+	}	
+	
+	//만약 키가 루트보다 작으면 왼쪽 트리에 있다.
+	if(key < root->key){
+		root->left = delete_node(root->left, key);
+	} 
+	else if(key > root->key){
+		root->right = delete_node(root->right ,key);
+	}
+	//루트 노드와 key 값이 같을 경우는 삭제가 들어가는 거임 위의 값이 다른경우는 같은 값이 나올때까지 순환하는 것. 
+	else{
+		if(root->left == NULL){
+			TreeNode * temp = root->right;
+			free(root);
+			return temp;
+		} 
+		else if(root -> right == NULL)
+		{
+			TreeNode * temp = root->left;
+			free(root);
+			return temp;
+		}
+		
+		TreeNode * temp = min_value_node(root->right);
+		
+		//중위 순회시 후계 노드를 복사한다.
+		root->key = temp->key;
+		//노드 자체를 때온 것이 아닌 키값만 넣어줬으니 아래 작업 필요 
+		//중위 순회시 후계 노드를 삭제한다. (중위 순회는 다음 차례가 오른쪽임. 기존에 있떤 자리에서 같은 값을 제거해줘야하자너)
+		root->right = delete_node(root->right, key);
+		//그리고 이제 다시는 남은 노드값이 NULL이 될 경우 맨 앞의 if(root == NULL) return root; 로 마무리 된다.	(반복 순회의 제일 마지막) 
+	}
+	
+	return root;//(여기서는 맨 처음의 root 까지 계속 타고타고 올라옴)
+} 
+
+//중위 순회
+void inorder(TreeNode *root){
+	if(root){
+		inorder(root->left); //왼쪽 서브트리 순회
+		printf(" [%d] ", root->key); //노드 방문
+		inorder(root->right); //오른쪽 서브트리 순회 
+		//이게 계속 반복되는 거임 
+	}
+} 
+//	 11 | 3 | 4 | 1 | 56 | 5 | 6 | 2 | 98 | 32 | 23 | 
+int main(void)
+{
+	TreeNode * root = NULL;
+
+	
+	root = insert_node(root, 11);
+	root = insert_node(root, 3);
+	root = insert_node(root, 4);
+	root = insert_node(root, 1);
+	root = insert_node(root, 56);
+	root = insert_node(root, 5);
+	root = insert_node(root, 6);
+	root = insert_node(root, 2);
+	root = insert_node(root, 98);
+	root = insert_node(root, 32);
+	root = insert_node(root, 23);
+	
+	printf("이진 탐색 트리 중위 순회 결과 \n");
+	inorder(root);
+	printf("\n\n");
+
+	
+	return 0;
+} 
+*/
+
+/*
+19.18번은 오름차순으로 정렬시키는 경우이다.
+이진 탐색 트리를 이용하여 배열에 저장된 숫자들을 내림차순으로 정렬시키는 함수를 작성하여 보라.
+
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int element;
+typedef struct TreeNode{
+	element key;
+	struct TreeNode *left, *right;
+}TreeNode;
+
+//순환적인 탐색함수 
+TreeNode * search(TreeNode * node, int key)
+{
+	if(node == NULL){
+		return NULL;
+	}
+	if(key == node->key){
+		return node;
+	}
+	else if(key < node->key){
+		return search(node->left, key);
+	}
+	else{
+		return search(node->right, key);
+	}
+}
+
+TreeNode * new_node(int item)
+{
+	TreeNode * temp = (TreeNode *)malloc(sizeof(TreeNode));
+	temp->key = item;
+	temp->right = temp->left = NULL;
+	return temp;
+}
+
+TreeNode * insert_node(TreeNode * node, int key)
+{
+	//트리가 공백이면 새로운 노드를 반환
+	if(node == NULL){
+		return new_node(key);
+	} 
+	//탐색이 실패로 끝난 그 지점이 새로운 노드 값이 들어오는 지점이다. NULL 인 곳은 순환에 의해 new_node(key) 
+	if(key < node->key){
+		node->left = insert_node(node->left,key);
+	}
+	else if(key > node->key){
+		node->right = insert_node(node->right, key);
+	}
+	//변경된 루트 포인터를 반환한다. 
+	return node;
+}
+
+TreeNode * min_value_node(TreeNode * node)
+{
+	TreeNode * current = node;
+	
+	//여기서는 매개변수로 root->right을 받고 그 맨 왼쪽 단말 노드를 찾으로 내려감 
+	while(current->left != NULL){
+		current = current->left;
+	} 
+	
+	return current;
+}
+
+//이진 탐색 트리와 키가 주어지면 저장된 노들르 삭제하고
+//새로운 루트 노드를 반환한다.
+TreeNode * delete_node(TreeNode * root, int key)
+{
+	if(root == NULL){
+		return root;
+	}	
+	
+	//만약 키가 루트보다 작으면 왼쪽 트리에 있다.
+	if(key < root->key){
+		root->left = delete_node(root->left, key);
+	} 
+	else if(key > root->key){
+		root->right = delete_node(root->right ,key);
+	}
+	//루트 노드와 key 값이 같을 경우는 삭제가 들어가는 거임 위의 값이 다른경우는 같은 값이 나올때까지 순환하는 것. 
+	else{
+		if(root->left == NULL){
+			TreeNode * temp = root->right;
+			free(root);
+			return temp;
+		} 
+		else if(root -> right == NULL)
+		{
+			TreeNode * temp = root->left;
+			free(root);
+			return temp;
+		}
+		
+		TreeNode * temp = min_value_node(root->right);
+		
+		//중위 순회시 후계 노드를 복사한다.
+		root->key = temp->key;
+		//노드 자체를 때온 것이 아닌 키값만 넣어줬으니 아래 작업 필요 
+		//중위 순회시 후계 노드를 삭제한다. (중위 순회는 다음 차례가 오른쪽임. 기존에 있떤 자리에서 같은 값을 제거해줘야하자너)
+		root->right = delete_node(root->right, key);
+		//그리고 이제 다시는 남은 노드값이 NULL이 될 경우 맨 앞의 if(root == NULL) return root; 로 마무리 된다.	(반복 순회의 제일 마지막) 
+	}
+	
+	return root;//(여기서는 맨 처음의 root 까지 계속 타고타고 올라옴)
+} 
+
+//중위 순회
+void descendant(TreeNode *root){
+	if(root){
+		descendant(root->right); //오른쪽 서브트리 순회
+		printf(" [%d] ", root->key); //노드 방문
+		descendant(root->left); //왼쪽 서브트리 순회 
+		//이게 계속 반복되는 거임 
+	}
+} 
+//	 11 | 3 | 4 | 1 | 56 | 5 | 6 | 2 | 98 | 32 | 23 | 
+int main(void)
+{
+	TreeNode * root = NULL;
+
+	
+	root = insert_node(root, 11);
+	root = insert_node(root, 3);
+	root = insert_node(root, 4);
+	root = insert_node(root, 1);
+	root = insert_node(root, 56);
+	root = insert_node(root, 5);
+	root = insert_node(root, 6);
+	root = insert_node(root, 2);
+	root = insert_node(root, 98);
+	root = insert_node(root, 32);
+	root = insert_node(root, 23);
+	
+	printf("이진 탐색 트리 중위 순회 결과 \n");
+	descendant(root);
+	printf("\n\n");
+
+	
+	return 0;
+} 
+*/ 
+
+/*
+//순회 개념 활용이 포인트 인가? 
+20. 이진 탐색 트리의 모든 노드의 값을 1씩 증가시키는 함수를 작성하여 보라. 
+
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef int element;
+typedef struct TreeNode{
+	element key;
+	struct TreeNode *left, *right;
+}TreeNode;
+
+//순환적인 탐색함수 
+TreeNode * search(TreeNode * node, int key)
+{
+	if(node == NULL){
+		return NULL;
+	}
+	
+	if(key == node->key){
+		return node;
+	}
+	else if(key < node->key){
+		return search(node->left, key);
+	}
+	else{
+		return search(node->right, key);
+	}
+}
+
+TreeNode * new_node(int item)
+{
+	TreeNode * temp = (TreeNode *)malloc(sizeof(TreeNode));
+	temp->key = item;
+	temp->right = temp->left = NULL;
+	return temp;
+}
+
+TreeNode * insert_node(TreeNode * node, int key)
+{
+	//트리가 공백이면 새로운 노드를 반환
+	if(node == NULL){
+		return new_node(key);
+	} 
+	//탐색이 실패로 끝난 그 지점이 새로운 노드 값이 들어오는 지점이다. NULL 인 곳은 순환에 의해 new_node(key) 
+	if(key < node->key){
+		node->left = insert_node(node->left,key);
+	}
+	else if(key > node->key){
+		node->right = insert_node(node->right, key);
+	}
+	//변경된 루트 포인터를 반환한다. 
+	return node;
+}
+
+TreeNode * min_value_node(TreeNode * node)
+{
+	TreeNode * current = node;
+	
+	//여기서는 매개변수로 root->right을 받고 그 맨 왼쪽 단말 노드를 찾으로 내려감 
+	while(current->left != NULL){
+		current = current->left;
+	} 
+	
+	return current;
+}
+
+//이진 탐색 트리와 키가 주어지면 저장된 노들르 삭제하고
+//새로운 루트 노드를 반환한다.
+TreeNode * delete_node(TreeNode * root, int key)
+{
+	if(root == NULL){
+		return root;
+	}	
+	
+	//만약 키가 루트보다 작으면 왼쪽 트리에 있다.
+	if(key < root->key){
+		root->left = delete_node(root->left, key);
+	} 
+	else if(key > root->key){
+		root->right = delete_node(root->right ,key);
+	}
+	//루트 노드와 key 값이 같을 경우는 삭제가 들어가는 거임 위의 값이 다른경우는 같은 값이 나올때까지 순환하는 것. 
+	else{
+		if(root->left == NULL){
+			TreeNode * temp = root->right;
+			free(root);
+			return temp;
+		} 
+		else if(root -> right == NULL)
+		{
+			TreeNode * temp = root->left;
+			free(root);
+			return temp;
+		}
+		
+		TreeNode * temp = min_value_node(root->right);
+		
+		//중위 순회시 후계 노드를 복사한다.
+		root->key = temp->key;
+		//노드 자체를 때온 것이 아닌 키값만 넣어줬으니 아래 작업 필요 
+		//중위 순회시 후계 노드를 삭제한다. (중위 순회는 다음 차례가 오른쪽임. 기존에 있떤 자리에서 같은 값을 제거해줘야하자너)
+		root->right = delete_node(root->right, key);
+		//그리고 이제 다시는 남은 노드값이 NULL이 될 경우 맨 앞의 if(root == NULL) return root; 로 마무리 된다.	(반복 순회의 제일 마지막) 
+	}
+	
+	return root;//(여기서는 맨 처음의 root 까지 계속 타고타고 올라옴)
+} 
+
+//중위 순회
+void inorder(TreeNode * root)
+{
+	if(root){
+		inorder(root->left);
+		printf("[%d] ", root->key);
+		inorder(root->right);
+	}
+}
+//중위 순회 더하기 
+void inorder_plus(TreeNode *root)
+{
+	if(root){
+		inorder_plus(root->left); 
+		root->key = root->key + 1;
+		inorder_plus(root->right);	
+	}
+} 
+//	 11 | 3 | 4 | 1 | 56 | 5 | 6 | 2 | 98 | 32 | 23 | 
+int main(void)
+{
+	TreeNode * root = NULL;
+
+	
+	root = insert_node(root, 11);
+	root = insert_node(root, 3);
+	root = insert_node(root, 4);
+	root = insert_node(root, 1);
+	root = insert_node(root, 56);
+	root = insert_node(root, 5);
+	root = insert_node(root, 6);
+	root = insert_node(root, 2);
+	root = insert_node(root, 98);
+	root = insert_node(root, 32);
+	root = insert_node(root, 23);
+	
+	printf("이진 탐색 트리 중위 순회 결과 \n");
+	inorder(root);
+	printf("\n\n");
+	inorder_plus(root);
+	inorder(root);
+	
+	
+	return 0;
+} 
+*/
+
+/*
+21.
+이진 탐색 트리를 활용하여 우선순위 큐를 구현할 수도 있다. 
+우선순위 큐란 항목들이 우선순위를 가지고 있고 우선순위가 가장 큰 항목이 먼저 삭제되는 큐이다.
+이진 탐색트리에서 가장 큰 탐색 값을 찾으려면 어떻게 해야 하는가.?
+
+정답: 트리의 가장 오른쪽 노드로 가야한다. 
+*/
+
+/*
+22.
+이진 탐색 트리의 가장 큰 용도가 map(사전)이라는 자료구조를 구현하는 것이다.
+본문에서 우리는 단어장을 구현해보았다. 
+여기서는 이진 탐색트리를 이용하여 친구들의 연락처를 저장하고 탐색하는 프로그램을 작성하여 보자.
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <memory.h>
+
+#define MAX_CHAR 100
+
+typedef struct {
+	char name[MAX_CHAR];
+	char phone[MAX_CHAR];
+} element;
+
+typedef struct TreeNode{
+	element key;
+	struct TreeNode *left, *right;
+} TreeNode;
+
+int compare(element e1, element e2) 
+{
+	return strcmp(e1.name, e2.name);
+}
+
+TreeNode * search(TreeNode * root, element data)
+{
+	TreeNode * p = root;
+	if(p == NULL){
+		return NULL;
+	}
+	
+	if( compare(data, p->key) == 0 ) {
+		return p;
+	}
+	else if( compare(data, p->key) < 0 ){
+		search(p->left, data);
+	}
+	else if( compare(data, p->key) > 0 ){
+		search(p->right, data);
+	}
+}
+
+TreeNode * new_node(element item)
+{
+	TreeNode * node = (TreeNode *)malloc(sizeof(TreeNode));
+	node->key = item;
+	node->left = node->right = NULL;
+	return node;
+}
+
+TreeNode * insert_node(TreeNode * root, element item)
+{
+	if(root == NULL)
+	{
+		new_node(item);
+	}
+	
+	if( compare(item, root->key) < 0 ){
+		root->left = insert_node(root->left, item);
+	}
+	else if( compare(item, root->key) > 0 ){
+		root->right = insert_node(root->right, item);
+	}
+	
+	return root;
+}
+
+TreeNode * min_value_node(TreeNode * root){
+	TreeNode *p = root;
+	
+	//p!=null 이면 결론이 null로 나온다. 
+	while( p->left != NULL){
+		p = p->left;
+	}
+	
+	return p;
+}
+
+TreeNode * delete_node(TreeNode * root, element data)
+{
+	//말단 다음에 NULL을 반환해야 순회가 끝나게 된다. 
+	if(root == NULL){
+		return root;
+	}
+	
+	if( compare(data, root->key) < 0){
+		root->left = delete_node(root->left, data);
+	}
+	else if( compare(data, root->key) > 0){
+		root->right = delete_node(root->right, data);
+	}
+	else{
+		//왼쪽 서브트리가 비었을 경우 
+		if(root->left == NULL){
+			TreeNode * temp = root->right;
+			free(root);
+			return temp; 
+		}
+		else if(root->right == NULL){
+			TreeNode * temp = root->left;
+			free(root);
+			return temp;
+		}
+		//세 번째 경우 : root가 없기 때문에 위의 경웨 해당되면 밑의 값은 안나옴  
+		TreeNode * temp = min_value_node(root->right);
+		
+		root->key = temp->key;
+		//중복된 값은 결국 오른쪽 노드에서 나올수 밖에 없음 -> 이진 탐색 트리의 특성을 생각하고 / 이진트리 삭제 시 3가지 경우를 생각해보자. 
+		root->right = delete_node(root->right, temp->key); 
+		
+	}
+	
+	return root; 
+}
+
+void display(TreeNode * root)
+{
+	if(root != NULL){
+		printf("(");
+		display(root->left);
+		printf("친구의 이름 : %s\n친구의 전화번호: %s ", root->key.name, root->key.phone);
+		display(root->right);
+		printf(")");
+	}
+}
+
+void info()
+{
+	printf("삽입(i), 탐색(s), 삭제(d): ");
+}
+
+int main(void)
+{
+	char command;
+	element e;
+	TreeNode * root = NULL;
+	TreeNode * tmp;
+	do{
+		info();
+		scanf("%c", &command);
+		switch(command){
+		case 'i' :
+			printf("친구의 이름 : \n");
+			char name[MAX_CHAR];
+			gets(name); 
+			printf("%s", name);
+//			e.name = name;
+			printf("친구의 전화번호 : ");
+			char phone[MAX_CHAR];
+			gets(phone);
+			printf("%s", phone);
+//			insert_node(root, e);
+		case 's' :
+			display(root);
+		}
+		
+	} while(command != 'q');
+	
+	
+	
 	return 0;
 }
