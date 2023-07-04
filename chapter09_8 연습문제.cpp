@@ -73,3 +73,198 @@ idx 1 - 2 - 3 -  4 -  5 -  6 - 7
 최소 히프트리는 완전 이진트리를 만족하고 부모노드는 자식노드보다 값이 작아야한다.
 2번째 조건을 위반하기 때문에 최소 히프트리가 아니다.
 */ 
+
+/*
+13. 히프트리가 비어있는 상태에서 다음의 연산들을 차례대로 수행한 후의 최소 히프트리의 모습을 그려라.
+
+insert(20), insert(12), insert(3), insert(2), delete(), insert(5), insert(16), delete(), insert(1), is_empty()
+
+(1)	insert(20) 
+
+20
+
+(2) insert(12)
+
+12
+	20
+	
+(3)	insert(3)
+	12
+3	
+	20
+	
+(4) insert(2)
+
+	12
+3
+	2
+		20
+		
+(5)	delete()
+	12
+2
+	20
+	
+(6) insert(5)
+	12
+2	
+	5
+		20
+		
+(7) insert(16)
+
+	12
+
+2		
+		16	
+	5
+		20
+		
+(8) delete()
+
+	12
+
+5
+
+	16
+		20
+		
+(9) insert(1)
+
+	12
+
+1
+		16
+	5
+		20
+		
+(10) is_empty()
+Null이 아니다.
+*/ 
+
+/*
+14. 정렬되지 않은 배열(array)을 이용하여 우선순위 큐 추상자료형의 각종 연산들을 구현하여보라.
+#define MAX_STACK_SIZE 100
+
+typedef int element;
+typedef struct StackType{
+	int top;
+	element item[MAX_STACK_SIZE];
+} StackType;
+
+
+void insert(StackType * s, element item)
+{
+	s->item[top++] = item;
+}
+
+element delete(StackType *s)
+{
+	element item;
+	int min 99999;
+	idx;
+	
+	for(int i = 0; i < top; i++){
+		if(s->item[i] < min){
+			min = s->item[i];
+			idx = i;
+		}
+	}
+	for(int i = idx; i < top; i++){
+		s->item[i] = s->item[i+1]
+	}
+	
+	return min;
+}
+*/ 
+
+/*
+15. 연결리스트를 이용하여 우선순위 큐 추상자료형의 각종 연산들을 구현하여 보라.
+
+
+typedef int element;
+typedef struct LinkNode{
+	element item;
+	struct LinkNode *link;
+} LinkNode;
+
+void insert(LinkNode *head, element data)
+{
+	LinkNode *temp = (LinkNode *)malloc(sizeof(LinkNode));
+	temp->item = data;
+	temp->link = head->link;
+	head = temp; 
+	free(temp);
+}
+
+element delete(LinkNode * head)
+{
+	int min = 99999;
+	for(LinkNode * temp = head; temp != NULL; temp = temp->link){
+		if(temp->item < min){
+			min = temp->item
+		}
+	}
+	LinkNode * temp = head;
+	do{
+		temp = temp->link
+	} while (temp->link->item == min )
+	delete_delete(head, temp);
+}
+*/ 
+
+/*
+16. 최소 히프에서 임의의 요소를 삭제하는 C 함수를 작성하라.
+	결과 히프는 히프의 조건을 만족하여야 한다.
+
+#define MAX_ELEMENT 200
+typedef struct{
+	int key;
+} element;
+typedef struct{
+	element heap[MAX_ELEMENT];
+	int heap_size;
+}HeapType;
+
+element max_heap_find_delete(HeapType * h, element item)
+{
+	element data, temp;
+	int parent, child;
+	for(int i = 0; i < h->heap_size; i++){
+		if(h->heap[i].key == item.key){
+			data = h->heap[i];
+			parent = i;
+			break;
+		}
+	}
+	temp = h->heap[(h->heap_size)--];
+	
+	child = 2*parent;
+	
+	while (child <= h->heap_size){
+		if( (child < h->heap_size) && (h->heap[child].key) < h->heap[child + 1].key ){
+			child++;
+		}기 
+		if(temp.key >= h->heap[child].key){
+			break;
+		}
+		h->heap[parent] = h->heap[child];
+		parent = child;
+		child *= 2;
+	}
+	h->heap[parent] = temp;
+	
+	return data;
+} 
+*/
+
+/*
+17. 다음과 같이 각 글자들의 빈도가 있을 대, 호프만 코드를 계산해보자.
+	생성되는 트리를 그려보자. 
+	a:1 b:1 c:2 d:3 e:5 f:8 g:13 h:21
+	
+정답: 책에 필 
+*/
+
+
+
