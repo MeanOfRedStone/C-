@@ -108,6 +108,7 @@ void insert_edge(GraphType * g, int start, int end)
 	g->adj_mat[start][end] = 1;
 	g->adj_mat[end][start] = 1;
 } 
+
 void bfs_mat(GraphType * g, int v)
 {
 	int w;
