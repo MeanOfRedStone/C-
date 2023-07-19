@@ -130,3 +130,30 @@ int main(void)
 	
 	return 0;
 }
+
+
+Quiz01.
+<1>
+	distance:  	0  7  *  5  *  2  *  *
+	found:  	1  0  0  0  0  0  0  0
+<2>
+	distance:	0  7  *  5  4  2  6  *
+	found:		1  0  0  0  0  1  0  0
+<3>
+	distance:	0  6  *  5  4  2  6  8
+	found:		1  0  0  0  1  1  0  0  
+<4>
+	distance:	0  6  7  5  4  2  6  8
+	found:		1  0  0  1  1  1  0  0
+<5>
+	distance:	0  6  7  5  4  2  6  8
+	found:		1  1  0  1  1  1  0  0
+<6>
+	distance:	0  6  7  5  4  2  6  8 
+	found:		1  1  0  1  1  1  1  0
+<7>
+	distance:	0  6  7  5  4  2  6  8 
+	found:		1  1  1  1  1  1  1  0
+<8>
+	distance:	0  6  7  5  4  2  6  8 
+	found:		1  1  1  1  1  1  1  1
