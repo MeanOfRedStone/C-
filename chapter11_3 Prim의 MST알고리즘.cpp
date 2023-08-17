@@ -92,7 +92,7 @@ int main(void)
 	prim(&g, 0); 
 	return 0;
 }
-
+/*
 Quiz 01. 
 selected
 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
@@ -108,6 +108,6 @@ distance
 정점 5 추가
 정점 1 추가
 정점 2 추가 
- 
+*/
  
  
