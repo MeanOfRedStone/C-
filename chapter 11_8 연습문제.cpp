@@ -196,5 +196,298 @@ selected
  1 | 1 | 1 | 1 | 1 | 0 |
 distance
  0 | 20 | 10 | 10 | 15 | I |
-*/ 
+*/
 
+/*
+6. 5번의 그래프에 대하여 Floyd 알고리즘을 적용하고 배열 A의 내용을 매 단계마다 출력하라.
+
+정답: 모든 정점 사이의 최단 거리를 구할 때 사용한다. 
+//프로그램 11.11 Floyd의 최단 경로 프로그램
+#include <stdio.h>
+#include <stdlib.h>
+
+#define TRUE 1
+#define FALSE 0
+#define MAX_VERTICES 100
+#define INF 1000000 무한대(연결이 없는 경우)
+
+typedef struct GraphType {
+	int n; //정점의 개수 
+	int weight[MAX_VERTICES][MAX_VERTICES];
+} GraphType;
+
+int A[MAX_VERTICES][MAX_VERTICES];
+
+void printA(GraphType *g)
+{
+	int i, j;
+	printf("================================\n");
+	for(i = 0; i < g->n; i++){
+		for(j = 0; j < g->n; j++){
+			if(A[i][j] == INF){
+				printf(" * ");
+			}
+			else{
+				printf("%3d ", A[i][j]);
+			}
+		}
+		printf("\n");
+	}
+	printf("================================\n");
+}
+
+void floyd(GraphType * g)
+{
+	int i, j, k;
+	for(i = 0; i < g->n; i++){
+		for(j = 0; j < g->n; j++){
+			A[i][j] = g->weight[i][j];
+		}
+	}
+	printA(g);
+	
+	for(k = 0; k < g->n; k++){
+		for(i = 0; i < g->n; i++){
+			for(j = 0; j < g->n; j++){
+				if(A[i][k] + A[k][j] < A[i][j]){
+					A[i][j] = A[i][k] + A[k][j];
+				}
+			}
+		}
+		printA(g);
+	}
+}
+
+int main(void)
+{
+	GraphType g = {6,
+	{{0, 50, 45, 10, INF, INF},
+	{INF, 0, 10, 15, INF, INF},
+	{INF, INF, 0, INF, 30, INF},
+	{20, INF, INF, 0, 15, INF},
+	{INF, 20, INF, 35, 0, INF},
+	{INF, INF, INF, INF, 3, 0}}
+	};
+	floyd(&g);
+	
+	return 0;
+}
+*/
+
+/*
+7.Dijkstra의 최단 경로 함수를 그래프가 인접 리스트로 표현되어 있다고 가정하고 재작성하라. 
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <limits.h>
+
+#define TRUE 1
+#define FALSE 0
+#define MAX_VERTICES 100
+#define INF 1000000 /*무한대로 가정*/
+
+typedef struct GraphNode{
+	int vertex;
+	int weight;
+	struct GraphNode *link;
+} GraphNode; 
+
+typedef struct GraphType {
+	int n; //정점의 개수
+	GraphNode *adj_list[MAX_VERTICES];
+} GraphType;
+
+//인접행렬로 바뀌었기 때문에 인접행렬 관련 함수들 호출
+//그래프 초기화
+void graph_init(GraphType *g)
+{
+	int v;
+	g->n = 0;
+	for(v = 0; v < MAX_VERTICES; v++){
+		g->adj_list[v] = NULL;
+	}
+} 
+
+//정점 삽입 연산
+void insert_vertex(GraphType *g, int v)
+{
+	if( ((g->n) + 1) > MAX_VERTICES ) {
+		fprintf(stderr, "그래프 : 정점의 개수 초과");
+		return;
+	}
+	g->n++;
+}
+
+//간선 삽입 연산, v를 u의 인접 리스트에 삽입한다.
+void insert_edge(GraphType *g, int u, int v, int w)
+{
+	GraphNode *node;
+	if( u >= g->n || v >= g->n ){
+		fprintf(stderr, "그래프: 정점 번호 오류");
+		return; 
+	}
+	node = (GraphNode *)malloc(sizeof(GraphNode));
+	node->vertex = v;
+	node->weight = w;
+	node->link = g->adj_list[u];
+	g->adj_list[u] = node;
+} 
+
+
+
+//다익스트라 알고리즘 부분 
+int distance[MAX_VERTICES]; /*시작 정점으로부터의 최단경로 거리*/
+int found[MAX_VERTICES];
+
+int choose(int distance[], int n, int found[])
+{
+	int i, min, minpos;
+	min = INT_MAX;
+	minpos = -1;
+	for(i =0; i <n; i++){
+		if(distance[i] < min && !found[i]){
+			min = distance[i];
+			minpos = i;
+		}
+	}
+	return minpos;
+} 
+
+void print_status(GraphType * g)
+{
+	static int step = 1;
+	printf("STEP %d: ", step++);
+	printf("distance: ");
+	for(int i = 0; i < g->n; i++){
+		if(distance[i] == INF){
+			printf(" * ");
+		}
+		else{
+			printf("%2d ", distance[i]);
+		}
+	}
+	printf("\n");
+	printf(" found: ");
+	for(int i = 0; i < g->n; i++){
+		printf("%2d ", found[i]);
+	}
+	printf("\n\n");
+}
+
+void shortest_path(GraphType * g, int start)
+{
+	int i, u, w;
+	GraphNode *node;
+	
+	
+	//왜 distance[i]에 값을 넣으면 4가 될까??? 
+	for(i = 0; i < g->n; i++){
+		distance[i] = INF;
+	}
+	printf(">>>>>>Debug distance[i] 확인");
+	for(i = 0; i < g->n; i++){
+		printf(" %d |", distance[i]);
+	}
+	
+	
+	for(i = 0; i < g->n; i++) /* 초기화 */
+	{
+		node = g->adj_list[i];
+		for(node; node != NULL; node = node->link){
+			distance[i] = node->weight;
+		}
+//		distance[i] = g->weight[start][i];
+		found[i] = FALSE;
+	} 
+	found[start] = TRUE; /* 시작 정점 방문 표시 */
+	distance[start] = 0;
+	
+	
+	
+//	for(i = 0; i < g->n-1; i++){
+//		print_status(g);
+//		u = choose(distance, g->n, found);
+//		found[u] = TRUE;
+//		for(w = 0; w < g->n; w++){
+//			if(!found[w]){
+//				if(distance[u] + g->weight[u][w] < distance[w]){
+//					distance[w] = distance[u] + g->weight[u][w];
+//				}
+//			}
+//		}
+//	}
+//	print_status(g); 
+}
+
+int main(void)
+{
+//	GraphType g = {7,
+//	{{0, 7, INF, INF, 3, 10, INF},
+//	{7, 0, 4, 10, 2, 6, INF},
+//	{INF, 4, 0, 2, INF, INF, INF},
+//	{INF, 10, 2, 0, 11, 9, 4},
+//	{3, 2, INF, 11, 0, INF, 5},
+//	{10, 6, INF, 9, INF, 0, INF},
+//	{INF, INF, INF, 4, 5, INF, 0} }
+//	};
+
+	//인접행렬로 바뀐 GraphType 함수
+	GraphType g;
+	graph_init(&g); 
+	insert_vertex(&g, 0);
+	insert_vertex(&g, 1);
+	insert_vertex(&g, 2);
+	insert_vertex(&g, 3);
+	insert_vertex(&g, 4);
+	insert_vertex(&g, 5);
+	insert_vertex(&g, 6);
+
+//	printf("그래프 정점의 개수 : %d", g.n);
+
+	insert_edge(&g, 0, 1, 7);
+	insert_edge(&g, 0, 4, 3);
+	insert_edge(&g, 0, 5, 10);
+	
+	insert_edge(&g, 1, 0, 7);
+	insert_edge(&g, 1, 2, 4);
+	insert_edge(&g, 1, 3, 10);
+	insert_edge(&g, 1, 4, 2);
+	insert_edge(&g, 1, 5, 6);
+	
+	insert_edge(&g, 2, 1, 4);
+	insert_edge(&g, 2, 3, 2);
+	
+	insert_edge(&g, 3, 1, 10);
+	insert_edge(&g, 3, 2, 2);
+	insert_edge(&g, 3, 4, 11);
+	insert_edge(&g, 3, 5, 9);
+	insert_edge(&g, 3, 6, 4);
+	
+	insert_edge(&g, 4, 0, 3);
+	insert_edge(&g, 4, 1, 2);
+	insert_edge(&g, 4, 3, 11);
+	insert_edge(&g, 4, 6, 5);
+	
+	insert_edge(&g, 5, 0, 10);
+	insert_edge(&g, 5, 1, 6);
+	insert_edge(&g, 5, 3, 9);
+	
+	insert_edge(&g, 6, 3, 4);
+	insert_edge(&g, 6, 4, 5);
+	
+	shortest_path(&g, 0);
+	
+	return 0;
+}
+
+
+
+
+/*
+10. 다음의 그래프에 대하여 위상 정렬을 적용하고 그 결과를 구하라.
+
+
+정답: 
+여러개의 위상 순서 중 하나는 다음과 같다. 
+cs1 -> cs2 -> cs3 -> cs8 -> cs5 -> cs6 -> cs4 -> cs7 
+*/
