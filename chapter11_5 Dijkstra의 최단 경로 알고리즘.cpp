@@ -98,6 +98,10 @@ void shortest_path(GraphType * g, int start)
 		distance[i] = g->weight[start][i];
 		found[i] = FALSE;
 	} 
+//	printf(">>>>>>Debug distance[i] 확인\n");
+//	for(i = 0; i < g->n; i++){
+//		printf(" %d |", distance[i]);
+//	}
 	found[start] = TRUE; /* 시작 정점 방문 표시 */
 	distance[start] = 0;
 	for(i = 0; i < g->n-1; i++){
@@ -131,7 +135,7 @@ int main(void)
 	return 0;
 }
 
-
+/*
 Quiz01.
 <1>
 	distance:  	0  7  *  5  *  2  *  *
@@ -157,3 +161,4 @@ Quiz01.
 <8>
 	distance:	0  6  7  5  4  2  6  8 
 	found:		1  1  1  1  1  1  1  1
+	*/

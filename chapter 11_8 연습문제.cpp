@@ -276,7 +276,7 @@ int main(void)
 
 /*
 7.Dijkstra의 최단 경로 함수를 그래프가 인접 리스트로 표현되어 있다고 가정하고 재작성하라. 
-*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
@@ -284,7 +284,7 @@ int main(void)
 #define TRUE 1
 #define FALSE 0
 #define MAX_VERTICES 100
-#define INF 1000000 /*무한대로 가정*/
+#define INF 1000000 //무한대로 가정 
 
 typedef struct GraphNode{
 	int vertex;
@@ -336,7 +336,7 @@ void insert_edge(GraphType *g, int u, int v, int w)
 
 
 //다익스트라 알고리즘 부분 
-int distance[MAX_VERTICES]; /*시작 정점으로부터의 최단경로 거리*/
+int distance[MAX_VERTICES]; //시작 정점으로부터의 최단경로 거리
 int found[MAX_VERTICES];
 
 int choose(int distance[], int n, int found[])
@@ -356,7 +356,7 @@ int choose(int distance[], int n, int found[])
 void print_status(GraphType * g)
 {
 	static int step = 1;
-	printf("STEP %d: ", step++);
+	printf("STEP %d:\n", step++);
 	printf("distance: ");
 	for(int i = 0; i < g->n; i++){
 		if(distance[i] == INF){
@@ -378,45 +378,50 @@ void shortest_path(GraphType * g, int start)
 {
 	int i, u, w;
 	GraphNode *node;
-	
-	
-	//왜 distance[i]에 값을 넣으면 4가 될까??? 
+	 
 	for(i = 0; i < g->n; i++){
 		distance[i] = INF;
 	}
-	printf(">>>>>>Debug distance[i] 확인");
-	for(i = 0; i < g->n; i++){
-		printf(" %d |", distance[i]);
-	}
-	
-	
-	for(i = 0; i < g->n; i++) /* 초기화 */
+
+	for(i = 0; i < g->n; i++) // 초기화 
 	{
-		node = g->adj_list[i];
-		for(node; node != NULL; node = node->link){
-			distance[i] = node->weight;
-		}
 //		distance[i] = g->weight[start][i];
 		found[i] = FALSE;
-	} 
-	found[start] = TRUE; /* 시작 정점 방문 표시 */
+	}
+	
+	//distance[] 배열에 weight 입력 
+	node = g->adj_list[start];
+	for(node; node != NULL; node = node->link){
+//		printf("node값 확인 : %d\n", node->weight);
+//		printf("vertex값 확인 : %d\n", node->vertex);
+		distance[node->vertex] = node->weight;
+	}
+
+	//초기값 입력 
+	found[start] = TRUE; // 시작 정점 방문 표시
 	distance[start] = 0;
 	
 	
-	
-//	for(i = 0; i < g->n-1; i++){
-//		print_status(g);
-//		u = choose(distance, g->n, found);
-//		found[u] = TRUE;
-//		for(w = 0; w < g->n; w++){
-//			if(!found[w]){
-//				if(distance[u] + g->weight[u][w] < distance[w]){
-//					distance[w] = distance[u] + g->weight[u][w];
-//				}
-//			}
-//		}
-//	}
-//	print_status(g); 
+
+	for(i = 0; i < g->n-1; i++){
+		print_status(g);
+		u = choose(distance, g->n, found);
+		found[u] = TRUE;
+		
+		//최소 거리를 지닌 노드의 인접행렬을 찾음 
+		node = g->adj_list[u];
+		
+		for(w = 0; w < g->n; w++){
+			if(!found[w]){
+				for(node; node != NULL; node = node->link){
+					if(distance[u] + node->weight < distance[node->vertex]){
+						distance[node->vertex] = distance[u] + node->weight;
+					}
+				}
+			}
+		}
+	}
+	print_status(g); 
 }
 
 int main(void)
@@ -479,6 +484,22 @@ int main(void)
 	
 	return 0;
 }
+*/
+
+
+
+/*
+8.최단 경로 함수를 최단 경로의 길이 뿐만 아니라 그 경로까지 출력할 수 있도록 수정하라.
+
+정답: 이미 distance[]를 출력 
+*/
+
+/*
+9. 최단 경로 함수에서 distance[] 배열의 내용을 각 단계마다 출력하라, distance[] 배열의 내용의 역할을 설명하라. 
+
+정답: 새롭게 생긴 경로들 중 기존 경로보다 작은 값이 있으면 값을 바꿔 출력한다.
+값이 작은 지점을 다음 경로로 삼는다. 
+*/
 
 
 
