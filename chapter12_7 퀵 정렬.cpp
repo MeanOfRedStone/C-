@@ -116,3 +116,70 @@ int main(void)
 	return 0;
 }
 
+/*
+//프로그램 12.9 qsort.c
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+//
+int compare(const void *arg1, const void *arg2)
+{
+	if( *(double *)arg1 > *(double *)arg2){
+		return 1;
+	}
+	else if( *(double *)arg1 == *(double *)arg2){
+		return 0;
+	}
+	else{
+		return -1;
+	}
+} 
+
+int main(void)
+{
+	int i;
+	double list[5] = {2.1, 0.9, 1.6, 3.8, 1.2};
+	qsort( (void *)list, (size_t)5, sizeof(double), compare);
+	for ( i = 0; i < 5; i++){
+		printf("%f ", list[i]);
+	}
+	
+	return 0;
+}
+*/
+
+
+/*
+1. 퀵정렬이 아래의 key를 정렬할 때 key의 자리 변화를 단계별로 보여라
+1단계)
+
+4 | 7 - 1 - 8 - 6 - 2 - 5 - 3
+
+| 3 - 1 - 2 | 4 |6 -  8 - 5 - 7 
+
+2단계)
+
+3 - 1 - 2	| 4 |	6 - 8 - 5 - 7
+
+
+ 1 - 2 		| 3 |	| 4 |		 5  	| 6 | 	8 - 7 
+ 
+ 
+3단계)
+
+| 1 |	2	| 3 |	| 4 |	| 5 |	| 6 |		7	| 8 |
+
+4단계)
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+
+2. 1, 000, 000개의 레코드를 정렬할 때, 퀵정렬이 삽입정렬보다 얼마나 빠르겠는가?
+평균 
+삽입 
+10^12
+/
+퀵
+10^6 * log2(10^6) 
+
+배 만큼 빠르다. 
+*/
