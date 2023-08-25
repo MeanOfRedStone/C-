@@ -168,4 +168,130 @@ void sort(int A[], int n)
 8단계)
 38 49 53 55 71 72 82 92
 */
+/*
+7. 다음과 같은 입력 배열을 퀵 정렬을 이용하여 정렬할 때, 피봇을 선택하는 방법을 다르게 하여 각 단계별 내용을 나타내어라.
+1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+(1) 왼쪽 첫 번째 요소를 피봇으로 하는 방법
+1단계)
+1	|	2 3 4 5 6 7 8
 
+2단계)
+1 | 2	|	3 4 5 6 7 8
+
+3단계)
+1 | 2 | 3	|	4 5 6 7 8
+
+4단계)
+1 | 2 | 3 | 4	|	5 6 7 8
+
+5단계)
+1 | 2 | 3 | 4 | 5 	|	6 7 8
+
+6단계)
+1 | 2  | 3 | 4 | 5 | 6	|	7 8
+
+7단계)
+1 | 2 | 3 | 4 | 5 | 6 | 7	|	8
+
+8단계)
+1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+
+(2) 왼쪽, 중간, 오른쪽 가운데 중간값(median of three) 방법
+1단계) 
+4	|	1 2 3 5 6 7 8 
+
+1 2 3 	|	4	|	5 6 7 8
+
+2단계) 
+2 |	1 3		| 4 |	6	| 5 7 8
+1 	| 2 |	3	| 4 |	5	| 6 |	7 8
+
+3단계)
+ 1 | 2 | 3 | 4 | 5 | 6 | 7 |	8
+ 
+4단계)
+1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+*/
+
+/*
+8. 퀵 정렬에서 함수가 수행되면서 정렬의 매 패스마다 다음과 같은 형식으로 화면에  출력하도록 삼수를 수정하여 보라. 
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_SIZE 8
+#define SWAP(x, y , t) ( (t)=(x), (x)=(y), (y)=(t) )
+
+int list[MAX_SIZE];
+int n;
+
+int partition(int list[], int left, int right)
+{
+	int pivot, temp;
+	int low, high;
+	
+	low = left;
+	high = right + 1; //pivot으로 left 하나 내줘야하기 때문이 high 도 이에 맞추어 하나 내주기 위해 +1 해준다.
+	pivot = list[left];
+	
+	int i, n = MAX_SIZE;
+	for(i = 0; i < n; i++){
+			printf("%d ", list[i]);
+		}
+	printf("\n");
+	printf("   ");
+	printf("low");
+	printf("   ") ;
+	printf("high");
+	printf("\n");
+	
+	do{
+		
+		
+		do{
+			low++;
+		} while (list[low] < pivot);
+		
+		do{
+			high--;
+		} while(list[high] > pivot);
+		if(low <high){
+			SWAP(list[low], list[high], temp);
+		}
+	} while(low < high);
+	
+	// 교환이 모두 끝나면 pivot값을 가운데로 이동
+	SWAP(list[left], list[high], temp);
+	
+	return high; //pivot 의 인덱스를 반환 -> pivot은 부분 리스트 기주으로 이미 정렬된 위치에 있기 때문이다.
+}
+
+void quick_sort(int list[], int left, int right)
+{
+	if(left < right){ //부분 리스트의 데이터 개수가 1개가 되면 멈춘다.  
+		//partion을 어떻게 구하느냐... 뒤의 알고리즘에서 
+		int q = partition(list, left, right);
+		
+		// pivot 값은 제외하고 순환호출을 반복한다.  
+		quick_sort(list, left, q - 1);
+		quick_sort(list, q + 1, right);
+	}
+} 
+
+int main(void)
+{
+	int i;
+	n = MAX_SIZE;
+	int list[n] = {67, 90, 57, 25, 84, 32, 73, 54};
+
+	quick_sort(list, 0, n-1);
+	
+//	printf("[정렬 후] \n");
+//	for(i = 0; i < n; i++){
+//		printf("%d ", list[i]);
+//	}
+//	printf("\n");
+	
+	return 0;
+}
