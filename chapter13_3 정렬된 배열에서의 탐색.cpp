@@ -102,3 +102,85 @@ int interpol_search(int key, int n)
 		return -1;
 	}
 } 
+
+
+QUIZ1. 아래의 정렬된 리스트를 키 값 '4'로 개선된 순차 탐색하는 순서를 보이고, 비교횟수를 답하라.
+0	1	2	3	4	5	6	7
+1 | 2 | 3 | 5 | 6 | 8 | 9 | 10 | 
+1단계)
+if list[0] == 5
+	break;
+else
+	i++
+	
+2단계) 
+if list[1] == 5
+	break;
+else
+	i++
+
+3단계) 
+if list[2] == 5
+	break;
+else
+	i++
+
+4단계)
+if list[3] == 5
+	break;
+else
+	i++
+	
+5단계)
+if ( i == high + 1)
+	return -1;
+else
+	return i;
+	
+결과값 i = 3 | 5번 비교한다.
+
+QUIZ2. 아래의 정렬된 리스트를 키 값  5로 이진 탐색하는 순서를 보이고, 비교 횟수를 답하라. 
+1단계) 0, 7까지 이진탐색 
+middle = 3
+if(5 == list[middle]) 
+	return middle
+else if( 5 < list[middle])
+	return 0부터 middle-1까지 이진탐색 
+else if( 5 > list[middle])
+	reuturn middle + 1부터 high까지 이진탐색 
+2단계) 4부터 7까지 순차탐색
+middle = 5
+if(5 == list[middle]) 
+	return middle
+else if( 5 < list[middle])
+	return 4부터 middle-1까지 이진탐색 
+else if( 5 > list[middle])
+	reuturn middle + 1부터 high까지 이진탐색
+	
+3단계) 4부터 4까지 이진탐색
+middle = 4
+if(5 == list[middle]) 
+	return middle
+else if( 5 < list[middle])
+	return 4부터 middle-1까지 이진탐색 
+else if( 5 > list[middle])
+	reuturn middle + 1부터 high까지 이진탐색
+
+결과값 -1 | 7번 비교한다.
+
+QUIZ 3. 아래의 정렬된 리스트를 키 값 6으로 보간 탐색하는 순서를 보이고 비교 횟수를 답하라.
+1단계)0에서 7까지 보간탐색 
+list[7] >= 6 && 6 > list[0]
+j =  (6 - 1) / (10 - 1) * (7 - 0) + low = 5/9*7 =3.xx -> 3
+if( 6 > list[3] )
+	low = j + 1;
+	
+2단계) 4에서 7까지 보간 탐색
+list[7] >= 6 && 6 > list[4]
+
+3단계)
+if(list[4] == 6)
+else
+	return -1
+	
+결과값 -1 | 4번 비교 

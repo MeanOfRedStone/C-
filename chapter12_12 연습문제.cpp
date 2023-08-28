@@ -215,7 +215,7 @@ void sort(int A[], int n)
 
 /*
 8. 퀵 정렬에서 함수가 수행되면서 정렬의 매 패스마다 다음과 같은 형식으로 화면에  출력하도록 삼수를 수정하여 보라. 
-*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -236,18 +236,37 @@ int partition(int list[], int left, int right)
 	pivot = list[left];
 	
 	int i, n = MAX_SIZE;
-	for(i = 0; i < n; i++){
-			printf("%d ", list[i]);
-		}
-	printf("\n");
-	printf("   ");
-	printf("low");
-	printf("   ") ;
-	printf("high");
-	printf("\n");
+//	for(i = 0; i < n; i++){
+//			printf("%d\t", list[i]);
+//	}
+//	printf("\n");
+//	for(i = 0; i < low + 1; i++){
+//		printf("\t");
+//	}
+//	printf("low");
+//	for(i = 0; i < high - 2; i++){
+//		printf("\t");
+//	}
+//	printf("high");
+//	printf("\n");
 	
 	do{
 		
+//		for(i = 0; i < n; i++){
+//			printf("%d\t", list[i]);
+//		}
+//		printf("\n");
+//		
+//		for(i = 0; i < low + 1; i++){
+//			printf("\t");
+//		}
+//		printf("low");
+//		
+//		for(i = 0; i < high - 2; i++){
+//			printf("\t");
+//		}
+//		printf("high");
+//		printf("\n");
 		
 		do{
 			low++;
@@ -287,11 +306,162 @@ int main(void)
 
 	quick_sort(list, 0, n-1);
 	
-//	printf("[정렬 후] \n");
-//	for(i = 0; i < n; i++){
-//		printf("%d ", list[i]);
+	printf("[정렬 후] \n");
+	for(i = 0; i < n; i++){
+		printf("%d ", list[i]);
+	}
+	printf("\n");
+	
+	return 0;
+}
+*/
+
+/*
+9. 다음 중 안정적인 정렬 방법이 아닌 것은 무엇인가?
+
+정답 : (2) 선택 정렬 
+*/
+
+/*
+10.다음 중 삽입 정렬이 가장 효율적으로 적용될 수 있을 때는?
+정답: (2) 어느 정도 정렬이 되어 있다.
+-> 비교연산 횟수가 줄어든다. 이동 여산도 줄어든다. 
+*/
+
+/*
+11. 퀵정렬을 이용하여 다음의 정수 배열을 정렬하고자 한다.
+
+(a) 첫 번째 분할이 끝난 후의 배열의 내용을 나타내라.
+정답: 
+5 3 4 |5| 8 9 6 7
+
+(b) 이 첫 번째 분할에서 몇 번의 비교연산이 수행되는가? 
+정답: 
+[quick_sort]
+if(left < right) 1번
+
+[partition]
+1)
+low 비교 1번
+high 비교 1번
+low < high 2번 
+
+2)
+low 비교 2번
+high 비교 2번
+low < high 2번 
+
+3)
+low 비교 1번 
+high 비교 1번
+low < high 1번 
+
+총 14번 
+
+(c) 분할이 이루어지면 피봇값은, 피봇값보다 더 작은 서브 배열과 피봇값보다 더 큰 서브배열, 2개의 서브배열의 중간에 위치하게 된다.
+이 피봇값의 위치는 다음 단계가 진행되었을 대 변경이 되는가 아니면 되지 않는가? 그 이유는?
+정답:
+피봇값의 위치는 변경되지 않는다.
+문제에서 언급했듯이 피봇값을 기준으로 이미 정렬이 완료되었기 때문에 피봇값의 위치는 다른 비교에 영향을 받지 않는다.
+
+(d) 첫 번째 분할 다음에 호출되는 순환호출들은 무엇인가?
+정답: 
+서브배열의 크기가 1이 될때까지 계속해서 남은 서브배열을 정렬하기 위해 순환호출된다.
+*/
+
+/*
+12. 다음의 정수배열을 기수정렬을 이용하여 정렬하고자 한다. 기수정렬의 각 단계를 보여라.
+
+정답:
+1단계)
+210 220
+123 003 513
+294
+398 528 
+409 129
+
+210 220 123 003 513 294 398 528 409 129
+
+2단계)
+003 409
+210 513
+220 123 528 129 
+294 398
+
+003 409 210 513 220 123 528 129 294 398
+
+3단계)
+003
+123 129
+210 220 294
+398
+409 
+513 528
+
+003 123 129 210 220 294 398 409 513 528
+*/
+ 
+ 
+/*
+13. 
+*/
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+/*
+14. 삽입 정렬의 코드를 수정하여 삽입 정렬의 각 단계를 출력하도락 하라. 
+아래 그림에서 왼쪽 괄호 안에 있는 숫자는 정렬이 되어 있는 숫자들이다.
+오른쪽은 정렬을 해야 할 숫자들이다. 
+삽입정렬의 단계에서 다음과 같이 출력하도록 insertion_sort 함수를 수정하라.
+이를 위하여 사용자로부터 숫자들을 입력받을 수 있도록 하라. 
+*/
+#include <stdio.h>
+
+#define MAX_SIZE 6
+
+int before_sort[MAX_SIZE];
+int after_sort[MAX_SIZE]; 
+
+
+void insertion_sort(int list[], int n)
+{
+	int i, j , key;
+	for(i = 0; i < n; i++){
+		before_sort[i] = list[i];
+	}
+	//정렬 전 배열 
+	printf("()");
+	printf("\t");
+	printf("(");
+	printf("%d", before_sort[0]);
+	for(i = 1; i < n; i++){
+		printf(",%d", before_sort[i]);
+	}
+	printf(")");
+	
+	
+//	for(i = 1; i < n; i++){
+//		key = list[i];
+//		
+//		//key 값이 가장 작은 경우 j <- '-1'로 끝남 
+//		for(j = i - 1; j >= 0 && list[j] > key; j--){
+//			list[j + 1] = list[j]; 
+//		}
 //	}
-//	printf("\n");
+//	list[j + 1] = key;
+} 
+
+int main(void)
+{
+	int i, n = MAX_SIZE;
+	int list[MAX_SIZE] = {17, 9, 21, 6, 3, 12};
+	
+	insertion_sort(list, n);
 	
 	return 0;
 }
