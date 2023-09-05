@@ -412,6 +412,13 @@ typedef struct
 	char name[NAME_SIZE]; 
 } record;
 */
+#include <stdio.h>
+#include <string.h>
+
+#define MAX_SIZE 6
+#define NAME_SIZE 20
+//문자열 비교하는 것 있으면 댐 
+
 
 //레코드를 정의하기 위한 구조체 
 typedef struct
@@ -419,7 +426,54 @@ typedef struct
 	int key;
 	char name[NAME_SIZE]; 
 } record;
- 
+
+//삽입정렬 
+void insertion_sort(record list[], int n)
+{
+	int i, j, k;
+	char key[NAME_SIZE];
+
+	for(i = 1; i < n; i++){
+		printf("<%d단계>", i);
+		for(k = 0; k < n; k++){
+			printf(" %s |", list[k].name);
+		}
+		printf("\n");
+		
+		//문자열 변수 입력시 strcpy 써야한다!! 
+		//key  값에 정렬할 문자열 보관 
+		strcpy(key, list[i].name); 
+		printf("변경할 key값: %s\n", key);
+		
+		//key 값이 가장 작은 경우 j <- '-1'로 끝남 
+		for(j = i - 1; j >= 0 && strcmp(list[j].name, key) == 1; j--){
+			strcpy(list[j + 1].name, list[j].name); 
+		}
+		strcpy(list[j + 1].name, key);
+	}
+	
+} 
+
+int main(void)
+{
+	int i, n = MAX_SIZE;
+
+	record list[MAX_SIZE] = {{0, "amy"}, {1, "gabriel"}, {2, "tom"} ,{3, "samanda"}, {4, "kevin"}, {5, "bob"}};
+	printf("삽입 정렬 전 리스트:\n");
+	for(i = 0; i < n; i++){
+		printf(" %s |", list[i].name);
+	}
+	printf("\n");
+	//strcmp 앞단어 기준으로 뒷 단어랑 비교 앞단어가 더 빠르면 -1 같으면 0 늦으면 1 
+//	printf("%d", strcmp("amy", "abc"));
+	
+	insertion_sort(list, n);
+	printf("삽입 정렬 후 리스트 : \n");
+	for(i = 0; i < n; i++){
+		printf(" %s |", list[i].name);
+	}
+	return 0;
+} 
  
  
  
