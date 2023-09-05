@@ -403,8 +403,22 @@ low < high 1번
  
  
 /*
-13. 
+13. 삽입 정렬의 코드를 수정하여 숫자가 아니고 레코드를 삽입 정렬하는 프로그램을 구성해보자.
+즉 정렬이 되는 단위가 숫자가 아니고 레코드이다. 먼저 레코드를 표현하기 위해 다음과 같은 구조체를 사용한다.
+실무와 연관된 실제 프로그램들은 대부분 레코드를 정렬하여야 함을 기억해두길 바란다.
+typedef struct
+{
+	int key;
+	char name[NAME_SIZE]; 
+} record;
 */
+
+//레코드를 정의하기 위한 구조체 
+typedef struct
+{
+	int key;
+	char name[NAME_SIZE]; 
+} record;
  
  
  
@@ -419,7 +433,7 @@ low < high 1번
 오른쪽은 정렬을 해야 할 숫자들이다. 
 삽입정렬의 단계에서 다음과 같이 출력하도록 insertion_sort 함수를 수정하라.
 이를 위하여 사용자로부터 숫자들을 입력받을 수 있도록 하라. 
-*/
+
 #include <stdio.h>
 
 #define MAX_SIZE 6
@@ -430,30 +444,59 @@ int after_sort[MAX_SIZE];
 
 void insertion_sort(int list[], int n)
 {
-	int i, j , key;
-	for(i = 0; i < n; i++){
-		before_sort[i] = list[i];
-	}
+	int i, j , key, insert = 17;
 	//정렬 전 배열 
 	printf("()");
 	printf("\t");
 	printf("(");
-	printf("%d", before_sort[0]);
+	printf("%d", list[0]); //, 표시 때문에 첫번째거만 따로 
 	for(i = 1; i < n; i++){
-		printf(",%d", before_sort[i]);
+		printf(",%d", list[i]);
+	}
+	printf(")\n");
+	
+	for(i = 1; i < n; i++){
+		//정렬된 부분 출력 
+		printf("(%d", list[0]); 
+		for(int k = 1; k < i; k++){
+			printf(",%d", list[k]);
+		}
+
+		printf(")");
+		printf("\t");
+		
+		//정렬 안된 부분 출력 
+		printf("(");
+		printf("%d", list[i]);
+		for(int k = i + 1; k < n; k++){
+			printf(",%d", list[k]);
+		}
+		printf(")");
+		printf("\t");
+		printf("%d삽입\n", insert);
+		
+		
+		//정렬할 값을 선택 
+		key = list[i];
+		insert = key;		
+		//key 값이 가장 작은 경우 j <- '-1'로 끝남 
+		for(j = i - 1; j >= 0 && list[j] > key; j--){
+			list[j + 1] = list[j]; 
+		}
+		
+		//비교를 위해 인덱스 -1 줄었으니 삽입할 떄는 1 더해준다. 
+		list[j + 1] = key;
+	}
+	//마지막 리스트 출력 
+	printf("(%d",list[0]);
+	for(int k = 1; k < n; k++){
+		printf(",%d", list[k]);
 	}
 	printf(")");
-	
-	
-//	for(i = 1; i < n; i++){
-//		key = list[i];
-//		
-//		//key 값이 가장 작은 경우 j <- '-1'로 끝남 
-//		for(j = i - 1; j >= 0 && list[j] > key; j--){
-//			list[j + 1] = list[j]; 
-//		}
-//	}
-//	list[j + 1] = key;
+	printf("\t");
+	printf("()");
+	printf("\t");
+	printf("%d삽입\n", insert);
 } 
 
 int main(void)
@@ -465,3 +508,4 @@ int main(void)
 	
 	return 0;
 }
+*/

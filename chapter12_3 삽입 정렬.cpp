@@ -10,8 +10,9 @@ void insertion_sort(int list[], int n)
 		for(j = i - 1; j >= 0 && list[j] > key; j--){
 			list[j + 1] = list[j]; 
 		}
+		list[j + 1] = key;
 	}
-	list[j + 1] = key;
+	
 } 
 
 
