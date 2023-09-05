@@ -411,7 +411,7 @@ typedef struct
 	int key;
 	char name[NAME_SIZE]; 
 } record;
-*/
+
 #include <stdio.h>
 #include <string.h>
 
@@ -474,7 +474,7 @@ int main(void)
 	}
 	return 0;
 } 
- 
+*/
  
  
  
