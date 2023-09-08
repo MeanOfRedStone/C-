@@ -563,3 +563,248 @@ int main(void)
 	return 0;
 }
 */
+
+/*
+15. 삽입 정렬에서 입력과 출력이 모두 동적 연결 리스트로 주어지는 경우의 삽입 정렬 함수를 구현하라.
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+typedef int element;
+typedef struct ListNode{
+	element data;
+	struct ListNode *link; //변수 선언해야 실제 노드 생김. 
+} ListNode;
+
+//연결리스트 관련 함수 모음 
+//오류 처리 함수 
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+}
+
+//첫행에 노드 삽입
+ListNode* insert_first(ListNode *head, int value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = head; //head 자체는 포인터이기 때문에 head->link라고 하지 않는다. 
+	head = p; //head 자체를 listnode p가 대신한다.
+	return head; 
+}
+
+//노드 pre 뒤에 새로운 노드 삽입
+ListNode* insert(ListNode *head, ListNode *pre, element value)
+{
+	ListNode *p = (ListNode *)malloc(sizeof(ListNode));
+	p->data = value;
+	p->link = pre->link;
+	pre->link = p; //포인터 자리에 이제 새로운 노드를 넣어주는 것. 
+	return head; 
+} 
+
+ListNode* delete_first(ListNode *head)
+{
+	ListNode *removed;
+	if(head==NULL)
+	{
+		return NULL;
+	}
+	else
+	{
+		removed = head; //노드 removed 자리에 포인터인 head를 넣어준다.
+		head = removed->link;
+		free(removed);
+		return head; 
+	}
+}
+
+ListNode* delete_delete(ListNode *head, ListNode *pre)
+{
+	ListNode *removed;
+	removed = pre->link; //노드 그 자체는 포인터와 같다.
+	pre->link = removed->link;
+	free(removed);
+	return head;
+}
+
+void print_list(ListNode *head)
+{
+	for(ListNode *p = head; p != NULL; p=p->link) //새로운 링크 자리의 주소값이 비어있지 않다면 
+	{
+		printf("%d->",p->data);
+	}
+	printf("NULL \n");
+}
+
+
+ListNode * reverse_reverse(ListNode * head)
+{
+	ListNode * reverseHead = NULL;
+	for(head; head != NULL; head = head->link){
+		reverseHead = insert_first(reverseHead, head->data);
+	}
+	
+	return reverseHead;
+} 
+
+ListNode * insertion_sort(ListNode *head, int n)
+{
+	int key;
+	
+	printf(">>>>>>Debug : head 출력\n");
+	print_list(head);
+	printf("\n"); 
+	//정렬 후 배열
+	ListNode * after_sort = head; 
+	
+	//첫번 째 노드는 다시 정렬하지 않는다. 
+	head = head->link;
+	
+	//헤드 노드의 첫 번째 노드 값만 after_sort에 전달 
+	after_sort->link = NULL;
+	printf(">>>>>>debug : after_sort 출력 \n");
+	print_list(after_sort); 
+	printf("\n"); 
+	
+	
+	//정렬 전  배열 
+	ListNode * before_sort = head;
+	printf(">>>>>>Debug : before_sort 출력\n");
+	print_list(before_sort);
+	
+	for(before_sort; before_sort != NULL; before_sort = before_sort->link){
+		key = before_sort->data;
+		
+		
+		ListNode * temp = after_sort;
+		if(key < temp->data){
+			//삽입 정렬의 조건에 맞을때까지 탐색 
+			for(temp; temp->link != NULL && temp->data > key; temp = temp->link){}
+			//탐색이 끝난 자리에 키값 삽입 
+			after_sort = insert(after_sort, temp, key);
+		}
+		else {
+			after_sort = insert_first(after_sort, key);
+		}
+	}
+	after_sort = reverse_reverse(after_sort);
+	print_list(after_sort);
+	
+} 
+
+int count_node(ListNode * head)
+{
+	int count = 0;
+	
+	for(head; head != NULL; head = head->link){
+		count += 1;
+	}
+	return count;
+}
+
+
+
+int main(void)
+{
+	ListNode *head = NULL;
+	head = insert_first(head, 12); 
+	head = insert_first(head, 3); 
+	head = insert_first(head, 6); 
+	head = insert_first(head, 21); 
+	head = insert_first(head, 9); 
+	head = insert_first(head, 17); 
+	
+//	printf("정렬 전 연결리스트 출력 : \n");
+//	print_list(head);
+	
+	insertion_sort(head, count_node(head));
+	
+	return 0;
+}
+*/ 
+
+/*
+16. 선택 정렬의 코드를 수정하여 서택 정렬의 각 단계를 출력하도록 하라.
+	아래 그림에서 왼쪽 괄호 안에 있는 숫자는 정렬이 되어 있는 숫자들이다.
+	오른쪽은 정렬을 해야 할 숫자들이다. 
+	선택 정렬의 단계에서 다음과 같이 출력하도록 selection_sort 함수를 수정하라.
+	이를 위하여 사용자로부터 숫자들을 입력받을 수 있도록 하라.
+
+#include <stdio.h> 
+#include <stdlib.h>
+#include <time.h> 
+#define MAX_SIZE 10
+#define SWAP(x, y, t) ( (t)=(x), (x)=(y), (y)=(t))
+
+int list[MAX_SIZE];
+int n;
+
+void selection_sort(int list[], int n)
+{
+	int i, j, least, temp;
+	int after_sort[MAX_SIZE];
+	printf("( )\t");
+	printf("(");
+	for(i = 0; i < n; i++){
+		printf("%d ", list[i]);
+	}
+	printf(")\t");
+	printf("초기상태");
+	printf("\n");
+	
+	for(i = 0; i < n -1; i++){
+		least = i;
+		//최솟값 탐색 
+		for(j = i + 1; j < n; j++){
+			if(list[j] < list[least]){
+				least = j;
+			} 
+		}
+		SWAP(list[i], list[least], temp);
+		
+		printf("(");
+		for(int k = 0; k < i + 1; k++){
+			printf("%d ", list[k]);
+		}
+		printf(")");
+		printf("\t");
+		printf("(");
+		for(int k = i + 1; k < n; k++){
+			printf("%d ", list[k]);
+		}
+		printf(")");
+		printf("\t");
+		printf("%d선택 후 %d과 교환", list[i], list[least]);
+		printf("\n"); 
+	}
+	printf("(");
+	for(i = 0; i < n; i++){
+		printf("%d ", list[i]);
+	}
+	printf(")");
+	printf("\t");
+	printf("( )\t");
+	printf("%d 선택 후 %d과 교환", list[n-1], list[n-1]);
+}
+
+int main(void)
+{
+	int i;
+	n = MAX_SIZE;
+	srand(time(NULL));
+	for(i = 0; i < n; i++){ //난수 생성 및 출력 
+		list[i] = rand() % 100; //난수 발생 범위 0~99 
+	}
+	
+	selection_sort(list, n); //선택 정렬 호출
+//	for(i = 0; i < n; i++){
+//		printf("%d ", list[i]);
+//	}
+//	printf("\n");
+	
+	return 0;
+} 
+*/
