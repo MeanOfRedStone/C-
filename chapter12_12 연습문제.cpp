@@ -808,3 +808,265 @@ int main(void)
 	return 0;
 } 
 */
+
+/*
+17. 재귀 호출을 추적하기 위하여 quick_sort() 함수가 호출될 때마다 함수 이름과 인수의 값을 화면에 출력하라.
+quick_sort(0, 99)
+quick_sort(0,50)
+....
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_SIZE 10
+#define SWAP(x, y , t) ( (t)=(x), (x)=(y), (y)=(t) )
+
+int list[MAX_SIZE];
+int n;
+
+int partition(int list[], int left, int right)
+{
+	printf("quick_sort(%d, %d)\n", left, right);
+	int pivot, temp;
+	int low, high;
+	
+	low = left;
+	high = right + 1; //pivot으로 left 하나 내줘야하기 때문이 high 도 이에 맞추어 하나 내주기 위해 +1 해준다.
+	pivot = list[left];
+	do{
+		do{
+			low++;
+		} while (list[low] < pivot);
+		
+	do{
+		high--;
+	} while(list[high] > pivot);
+	if(low <high){
+		SWAP(list[low], list[high], temp);
+	}
+	}  while(low < high);
+	
+	// 교환이 모두 끝나면 pivot값을 가운데로 이동
+	SWAP(list[left], list[high], temp);
+	
+	return high; //pivot 의 인덱스를 반환 -> pivot은 부분 리스트 기주으로 이미 정렬된 위치에 있기 때문이다.
+}
+
+void quick_sort(int list[], int left, int right)
+{
+	if(left < right){ //부분 리스트의 데이터 개수가 1개가 되면 멈춘다.  
+		//partion을 어떻게 구하느냐... 뒤의 알고리즘에서 
+		int q = partition(list, left, right);
+		
+		// pivot 값은 제외하고 순환호출을 반복한다.  
+		quick_sort(list, left, q - 1);
+		quick_sort(list, q + 1, right);
+	}
+} 
+
+int main(void)
+{
+	int i;
+	n = MAX_SIZE;
+	srand(time(NULL));
+	for(i = 0; i < n; i++){
+		list[i] = rand() % 100;
+	}
+	
+	printf("[정렬 전] \n");
+	for(i = 0; i < n; i++){
+		printf("%d ", list[i]);
+	}
+	printf("\n");
+	quick_sort(list, 0, n-1);
+	
+	printf("[정렬 후] \n");
+	for(i = 0; i < n; i++){
+		printf("%d ", list[i]);
+	}
+	printf("\n");
+	
+	return 0;
+}
+*/
+/*
+18. 퀵정렬함수인 quick_sort 함수에서 피봇 값을 결정할 때, 부분 리스트의 첫 번째, 중간, 마지막 키중 중간 값을 사용하면 성능이 향상된다.
+quick_sort 함수가 이와 같은 3-중간값(median of three) 방법을 사용하도록 수정하여라.
+median{10, 5, 7} = 7이 된다. 
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define MAX_SIZE 10
+#define SWAP(x, y , t) ( (t)=(x), (x)=(y), (y)=(t) )
+
+int list[MAX_SIZE];
+int n;
+
+int partition(int list[], int left, int right)
+{
+	printf("quick_sort(%d, %d)\n", left, right);
+	int pivot, temp;
+	int low, high;
+	
+	//pivot 값을 설정하기 위한 중간 값 설정
+	int median = (left + right) / 2;  
+//	printf("median 값 확인 : %d\n", median);
+	low = left;
+	high = right + 1; //pivot으로 left 하나 내줘야하기 때문이 high 도 이에 맞추어 하나 내주기 위해 +1 해준다.
+	pivot = list[median];
+	do{
+		do{
+			low++;
+		} while (list[low] < pivot);
+		
+	do{
+		high--;
+	} while(list[high] > pivot);
+	if(low <high){
+		SWAP(list[low], list[high], temp);
+	}
+	}  while(low < high);
+	
+	// 교환이 모두 끝나면 pivot값을 가운데로 이동
+	SWAP(list[left], list[high], temp);
+	
+	return high; //pivot 의 인덱스를 반환 -> pivot은 부분 리스트 기주으로 이미 정렬된 위치에 있기 때문이다.
+}
+
+void quick_sort(int list[], int left, int right)
+{
+	if(left < right){ //부분 리스트의 데이터 개수가 1개가 되면 멈춘다.  
+		//partion을 어떻게 구하느냐... 뒤의 알고리즘에서 
+		int q = partition(list, left, right);
+		
+		// pivot 값은 제외하고 순환호출을 반복한다.  
+		quick_sort(list, left, q - 1);
+		quick_sort(list, q + 1, right);
+	}
+} 
+
+int main(void)
+{
+	int i;
+	n = MAX_SIZE;
+	srand(time(NULL));
+	for(i = 0; i < n; i++){
+		list[i] = rand() % 100;
+	}
+	
+	printf("[정렬 전] \n");
+	for(i = 0; i < n; i++){
+		printf("%d ", list[i]);
+	}
+	printf("\n");
+	quick_sort(list, 0, n-1);
+	
+	printf("[정렬 후] \n");
+	for(i = 0; i < n; i++){
+		printf("%d ", list[i]);
+	}
+	printf("\n");
+	
+	return 0;
+}
+*/
+
+/*
+19. 합병 정렬에서의 재귀 호출을 추적하기 위하여 함수 merge_sort가 호출되면 함수 이름과 인수의 값을 화면에 출력하게 변경하여보라.
+예측한 것처럼 출력되는지를 확인하라.
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h> 
+
+#define MAX_SIZE 10
+
+int list[MAX_SIZE];
+int sorted[MAX_SIZE]; // 추가 공간이 필요
+
+//	i는 정렬된 왼쪽 리스트에 대한 인덱스
+//	j는 정렬된 오른쪾 리스트에 대한 인덱스
+//	k는 정렬될 리스트에 대한 인덱스
+void merge(int list[], int left, int mid, int right)
+{
+	printf("**병합 %d부터 %d까지**\n",left, right);
+	int i, j , k ,l;
+	i = left; j = mid + 1; k = left;
+	
+	//분할 정렬된 list의 합병
+	while(i <= mid && j <= right){
+		if(list[i] <= list[j]){
+			sorted[k++] = list[i++];
+		}
+		else{
+			sorted[k++] = list[j++];
+		}
+	}
+	 //남아 있는 레코드를 일괄 복사
+	if( i > mid ){ 
+		for(l = j; l <= right; l++){
+			sorted[k++] = list[l];
+		}
+	}
+	else{
+		for(l = i; l <= mid; l++){
+			sorted[k++] = list[l];
+		}
+	}
+	// 배열 sorted[]의 리스트를 배열 list[]로 재복사
+	for(l = left; l <= right; l++){
+		list[l] = sorted[l];
+	}
+	printf("**병합 결과 확인 : %d부터 %d까지**\n",left, right);
+	for(l = left; l <= right; l++){
+		printf(" %d |", list[l]);
+	}
+	printf("\n");
+} 
+
+void merge_sort(int list[], int left, int right)
+{
+	printf("합병 정렬 (%d, %d)\n", left, right); 
+	int mid;
+	if(left < right){
+		mid = (left + right) / 2;
+		printf("mid값 확인 : %d\n",mid);
+		merge_sort(list, left, mid);
+		merge_sort(list, mid + 1, right);
+		merge(list, left, mid, right);
+	}
+	else{
+		printf("**순환호출 중지**\n");
+	}	
+}  
+
+int main(void)
+{
+	int i;
+	int n = MAX_SIZE;
+	
+	srand(time(NULL));
+	
+	for(i = 0; i < n; i++){
+		list[i] = rand() % 100;
+	}
+	
+	printf("정렬 전 : \n");
+	for(i = 0; i < n; i++){
+		printf(" %d |", list[i]);
+	}
+	printf("\n");
+	
+	merge_sort(list, 0, n-1);
+	
+	printf("정렬 후 : \n");
+	for(i = 0; i < n; i++){
+		printf(" %d |", list[i]);
+	}
+	printf("\n");
+	return 0;
+}
+*/
