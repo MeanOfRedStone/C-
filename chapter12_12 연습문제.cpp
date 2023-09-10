@@ -1070,3 +1070,348 @@ int main(void)
 	return 0;
 }
 */
+
+/*
+20. 히프 정렬이 진행되는 모습을 좀더 이해하기 쉽게 화면에 출력하여 보라
+즉 히프 정렬이 진행되는 동안의 list[] 배열의 내용을 출력하여 보라.
+이미 정렬이 끝난 숫자들과 정렬중인 숫자를 분리하여 표시하여 보라. 
+
+#include <stdio.h>
+#include <stdlib.h> 
+#define MAX_ELEMENT 200
+typedef struct{
+	int key;
+} element;
+typedef struct{
+	element heap[MAX_ELEMENT];
+	int heap_size;
+}HeapType;
+
+//생성함수
+HeapType * create()
+{
+	return (HeapType *)malloc(sizeof(HeapType));
+} 
+
+//초기화 함수
+void init(HeapType * h)
+{
+	h->heap_size = 0;	
+} 
+
+//현재 요소의 개수가 heap_size인 히프 h에 item을 삽입한다. 
+//삽입 함수
+void insert_max_heap(HeapType * h, element item)
+{
+	int i = 0;
+//	printf(">>> debug 삽입 아이템 : %d\n", item);
+	i = ++(h->heap_size);
+//	printf(">>> debug 전체 힙 사이즈: %d\n",i );
+	//트리를 거슬러 올라가면서 부모 노드와 비교하는 과정
+	while( (i != 1) && (item.key > h->heap[i / 2].key) ){
+		h->heap[i] = h->heap[i / 2];
+		i /= 2;
+	} 
+//	printf(">>>>>>Debug 삽입 위치 : %d\n",i );
+	h->heap[i] = item; //새로운 노드를 삽입 
+//	printf("힙 배열 : ");
+//	for(int j = 1; j < h->heap_size + 1; j++){
+//		printf("%d ", h->heap[j]);
+//	}
+//	printf("\n");
+}
+
+//삭제 함수
+element delete_max_heap(HeapType * h)
+{
+	int parent, child;
+	element item, temp;
+	
+	item = h->heap[1]; // 빠질 노드 = 루트노드 
+	temp = h->heap[(h->heap_size)--];
+	parent = 1;
+	child = 2;
+	
+	while(child <= h->heap_size){
+		//현재 노드의 자식노드 중 더 큰 자식노드를 찾느다.
+		if( (child < h->heap_size) && (h->heap[child].key < h->heap[child+1].key) ) {
+			child++;
+		}
+		if(temp.key >= h->heap[child].key){
+			break; //마지막 노드가 더 커질 경우 루프를 빠져나감 
+		}
+		//마지막 노드가 현재 위치의 자식노드보다 작을 경우 한 레벨 내려간다. 
+		h->heap[parent] = h->heap[child];
+		parent = child;
+		child *= 2;
+	}
+	h->heap[parent] = temp;
+	return item; 
+} 
+
+//우선순위 큐인 히프를 이용한 정렬
+void heap_sort(element a[], int n)
+{
+	int i;
+	HeapType * h;
+	printf("숫자의 개수 : %d\n", n);
+	//정렬 전 숫자 출력 
+	for(int j = 0; j < n; j++){
+		printf("%d ", a[j]);
+	}
+	printf("\n");
+	h = create();
+	
+	init(h);
+	for(i = 0; i < n; i++){
+		insert_max_heap(h, a[i]);
+	}
+	
+
+
+	for(i = (n-1); i >= 0; i--){
+		a[i] = delete_max_heap(h);
+		//최대 히프에서 아이템 제거 후 남은 힙 출력 
+		for(int j = 1; j < i + 1; j++){
+			printf("%d ", h->heap[j]);
+		}
+		//최대히프에서 나온 히프 정렬된 리스트 출력 
+		printf("[");
+		for(int k = i; k < n; k++){
+			printf(" %d ", a[k]);
+		}
+		printf("]");
+		printf("\n");
+	}
+	free(h);
+} 
+//quiz 1. 위의 히프 정렬 코드를 최소 히프를 사용하도록 수정하여 보자. 
+void insert_min_heap(HeapType * h, element item)
+{
+	int i;
+	i = ++(h->heap_size);
+	
+	//트리를 거슬러 올라가면서 부모 노드와 비교하는 과정
+	while( (i != 1) && (item.key < h->heap[i / 2].key) ){
+		h->heap[i] = h->heap[i / 2];
+		i /= 2;
+	} 
+	h->heap[i] = item; //새로운 노드를 삽입 
+}
+
+//삭제 함수
+element delete_min_heap(HeapType * h)
+{
+	int parent, child;
+	element item, temp;
+	
+	item = h->heap[1]; // 빠질 노드 = 루트노드 
+	temp = h->heap[(h->heap_size)--];
+	parent = 1;
+	child = 2;
+	
+	while(child <= h->heap_size){
+		//현재 노드의 자식노드 중 더 큰 자식노드를 찾느다.
+		if( (child < h->heap_size) && (h->heap[child].key > h->heap[child+1].key) ) {
+			child++;
+		}
+		if(temp.key <= h->heap[child].key){
+			break; //마지막 노드가 더 커질 경우 루프를 빠져나감 
+		}
+		//마지막 노드가 현재 위치의 자식노드보다 작을 경우 한 레벨 내려간다. 
+		h->heap[parent] = h->heap[child];
+		parent = child;
+		child *= 2;
+	}
+	h->heap[parent] = temp;
+	return item; 
+} 
+
+//우선순위 큐인 히프를 이용한 정렬
+void heap_min_sort(element a[], int n)
+{
+	int i;
+	HeapType * h;
+	
+	h = create();
+	
+	init(h);
+	for(i = 0; i < n; i++){
+		insert_min_heap(h, a[i]);
+	}
+	for(i = (n-1); i >= 0; i--){
+		a[i] = delete_min_heap(h);
+	}
+	free(h);
+} 
+#define SIZE 10
+int main(void)
+{
+	element list[SIZE] = {41, 67, 34, 0, 69, 24, 78, 58, 62, 64};
+	heap_sort(list,SIZE);
+	
+	printf("정렬된 배열 :\n");
+	for(int i = 0; i < SIZE; i++){
+		printf("%d ", list[i]);
+	}
+	
+	return 0;
+}
+*/
+
+/*
+21. 기수 정렬 프로그램에서 다음과 같이 각 버킷의 내용을 화면에 출력하는 함수 print_bucket()를 프로그램에 출력하라.
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <math.h>
+
+#define MAX_QUEUE_SIZE 100
+typedef int element;
+
+typedef struct{ // 큐 타입 
+	element data[MAX_QUEUE_SIZE];
+	int front, rear;
+} QueueType;
+
+//오류 함수
+void error(char *message)
+{
+	fprintf(stderr, "%s\n", message);
+	exit(1);
+} 
+
+//큐 초기화 
+void init_queue(QueueType *q)
+{
+	q->front = q->rear = 0;
+}
+
+//공백 상태 검출 함수
+int is_empty(QueueType *q)
+{
+	return (q->front == q->rear);
+} 
+
+//포화 상태 검출 함수
+int is_full(QueueType *q)
+{
+	return ( (q->rear + 1) % MAX_QUEUE_SIZE == q->front);
+} 
+
+//삽입 함수
+void enqueue(QueueType *q, element item)
+{
+	if(is_full(q)){
+		error("큐가 포화상태입니다.");
+	}
+	q->rear = (q->rear + 1) % MAX_QUEUE_SIZE;
+	q->data[q->rear] = item;
+} 
+
+//삭제 함수
+element dequeue(QueueType *q)
+{
+	if(is_empty(q)){
+		error("큐가 공백상태입니다.");
+	}
+	q->front = (q->front + 1) % MAX_QUEUE_SIZE;
+	return q->data[q->front]; 
+} 
+
+void print_bucket(QueueType * q, int digit)
+{
+	//bucket 출력 
+	printf("%.0lf의 자리\n", pow(10, digit));
+	printf("===============\n");
+	for(int j = 0; j < 10; j++){
+		printf("[%d]->", j);
+		if( !is_empty(&q[j]) ){
+			for(int k = q[j].front + 1; k < q[j].rear + 1; k++){
+				printf("%d ", q[j].data[k]);
+			}
+		}
+		printf("\n");
+	}
+	printf("===============\n");
+}
+
+#define BUCKETS 10
+#define DIGITS 2
+void radix_sort(int list[], int n)
+{
+	int i, b, d, factor = 1;
+	QueueType queues[BUCKETS];
+	
+	
+	/*
+	<작업 요약>
+	1. 기수 별 큐 값 초기화 
+	2. 전달 받은 숫자를 1의 자리부터 나누어서 queue에 넣어준다.
+	1) list[i] : 전달받은 숫자 값
+	2) list[i] / factor % 10 : 자리수별로 숫자 분류  factor 값은 1, 10, ...으로 증가한다.
+	3) 각 자리수에서 작은 숫자값부터 다시 리스트에 넣어준다.
+	4) 위 과정을 자리수별로 반복 
+	*/
+	
+	// 큐들의 초기화 
+	//queue 초기화를 loop에서 해주는 이유 : queue들의 배열 즉 자리수의 숫자마다 큐를 만들어준다. 
+	for(b = 0; b < BUCKETS; b++){
+		init_queue(&queues[b]); 
+	}
+	
+	for(d = 0; d < DIGITS; d++){
+		//데이터들을 자리수에 따라 큐에 삽입 (1의자리부터 점점 올려간다) 
+		for(i = 0; i < n; i++){
+			enqueue(&queues[(list[i] / factor) % 10], list[i]);
+		}
+		print_bucket(queues, d);
+		//bucket 출력 
+//		printf("%.0lf의 자리\n", pow(10, d));
+//		for(int j = 0; j < 10; j++){
+//			printf("[%d]\n", j);
+//			if( !is_empty(&queues[j]) ){
+//				for(int k = queues[j].front + 1; k < queues[j].rear + 1; k++){
+//					printf("%d ", queues[j].data[k]);
+//				}
+//				printf("\n");
+//			}
+//		}
+		
+		//버킷에서 꺼내어 list로 합친다. 
+		for(b = i = 0; b < BUCKETS; b++){
+			
+			//i와 b 구분한 이유: list 채워주는 것은 계속해서 일어나야하고 b는 loop 안에서 한번에 모두 빼줘야하기 때문. 
+			while(!is_empty(&queues[b])){
+				list[i++] = dequeue(&queues[b]);
+			}
+		}
+		//그 다음 자리수로 간다. 
+		factor *= 10;
+	}
+}
+
+#define SIZE 10
+
+int main(void)
+{
+	int list[SIZE];
+	srand(time(NULL));
+	//난수 생성 및 출력 
+	for( int i = 0; i < SIZE; i++){
+		list[i] = rand() % 100 ;
+	}
+	printf("정렬 전 배열 :\n");
+	for(int i = 0; i < SIZE; i++){
+		printf("%d ", list[i]);
+	} 
+	printf("\n");
+	radix_sort(list, SIZE);
+	printf("정렬 후 배열 :\n");
+	for(int i = 0; i < SIZE; i++){
+		printf("%d ", list[i]);
+	}
+	printf("\n");
+	return 0;
+} 
