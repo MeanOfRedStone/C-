@@ -138,7 +138,7 @@
 	20				80
 				60		90 
 				
-<6> 70
+<6> 70 
 				50
 	20						80
 					60				90 
@@ -235,6 +235,12 @@
 10  35 40	55	 	70    	90 
 */
 
+/*
+출제 포인트 
+(1)이진 탐색 트리, AVL 트리, 2-3 트리의 개념을 잘 알고 있고 그 과정을 잘 이해하는지 
+
+(2)이진 탐색 트리 이진 탐색 히프 간 헷갈리지 않는지 
+ 
 6. 데이터 (10, 20, 30, 40, 50, 60, 70, 80, 90, 100)
 (a) 이진탐색트리 
 <1>
@@ -313,14 +319,14 @@
 									100
 									
 (b) AVL 트리 
-<1>
+<1> 10 삽입 
 10
 
-<2>
+<2> 20 삽입 
 10
 	20
 	
-<3>
+<3> 30 삽입 
 10
 	20
 		30
@@ -329,12 +335,12 @@
 	20
 10		30
 
-<4>
+<4> 40 삽입 
 	20
 10		30
 			40
 			
-<5>
+<5> 50 삽입 
 	20
 10		30
 			40
@@ -345,54 +351,343 @@
 10				40
 			30		50 
 				
-<6>
+<6> 60 삽입 
 		20
 10				40
 			30		50 
 						60
-->회전
 						
-		40
-10				50
-	20		30		60 
-						
-<7>
-		40
-10				50
-	20		30		60 
-						70
-						
-<8>
-		40
-10				50
-	20		30		60 
-						70
-							80
 ->RR 회전 
 
+			40
+10						50
+	20						60
+		30
+		
+->RR 회전
+
+				40
+	20 					50
+10		30					60
+
+
+<7> 70 삽입
+				40
+	20 					50
+10		30					60
+								70
+								
+->RR 회전
+
+				40
+	20 					60
+10		30			50		70
+								
+								
+								
+								
+<8> 80 삽입 
+				40
+	20 					60
+10		30			50		70
+								80
+
+
+
+
+<9> 90 삽입 
+				40
+	20 					60
+10		30			50		70
+								80
+						  		 	90
+						  		 
+						  		 
+-> RR 회전 
+
+				40
+	20 					60
+10		30			50		80
+						  70  90
+						  
+<10> 100 삽입
+				40
+	20 					60
+10		30			50		80
+						  70  90
+						  		100 
+						  		 	
+-> RR회전 
+
+				40
+	20 						80
+10		30			50				90
+					  60	  			100 
+						70  		
+
+-> RR회전 
+				40
+	20 						80
+10		30			60				90
+				  50  70	  			100 
+				
+				
+(c) 2-3 트리
+<1> 10 삽입
+10
+
+<2> 20 삽입
+10 20
+
+<3> 30 삽입
+
+10 20 30
+
+->분리
+
+	20
+10 		30
+
+<4> 40 삽입
+
+	20
+10 		30 40
+
+<5> 50삽입 
+	20
+10 		30 40 50
+
+->분리
+
+	20 40
+10 	 30  50 
+	
+		
+<6> 60 삽입 
+	20 40
+10 	 30  50 60
+
+<7> 70 삽입
+	20 40
+10 	 30  50 60 70
+
+-> 분리 
+	20 40 60
+10		50	70	
+
+-> 분리
+ 
 		40
-10				50
-	20		30		70 
-				  60  80
+	20		60
+10		  50  70	
 
-<9>
-				40
-10							50
-	20				30				70 
-				  				60  	80
-				  							90
-->회전 
+<8> 80 삽입
+		40
+	20		60
+10		  50  70 80
 
-				40
-10							70
-	20				50				80 
-				  30	60		  		90
-				  		  		  
-				  				  
-<10>
-						70
-  20											80
-10		50												90 
-			50			  							60		  100
-		40		50
-	  30		  60
+<9> 90 삽입	
+		40
+	20		60
+10		  50  70 80 90
+
+-> 분리 
+
+
+		40
+	20		60 80
+10		  50  70 90
+
+
+<10> 100 삽입
+ 		40
+	20		60 80
+10		  50  70 90 100
+*/
+
+/*
+7. 난수 발생기를 이용하여 n개의 정수를 생성하라. 
+이들 정수를 공백 상태의 AVL 트리에 차례대로 넣어서 생성되는 트리의 높이를 측정한다. 
+이 실험을 서로 다른 난수들의 집합에 대하여 되풀이하여 평균적인 높이를 계산하라.
+이 값을 2[log2(n+1)]와 비교하라. n =100; 500; 1000; 10000, 50000일고 가정하라. 
+
+출제 포인트: 
+(1) 이진 트리의 높이에 대한 이해
+- 1 : 이진 트리의 노드가 n개일 떄 최소(log2(n+1)) < 높이 < 최대(n) 이다.
+  
+(2) AVL 트리 개념 이해
+- 왼쪽 서브트리 오른쪽 서브트리 높이 차 1이하인 트리를 말한다.
+
+(3) AVL 트리 연산 구현
+
+(4) 기본 코딩 이해 : 난수 발생시킬 수 있는지 
+*/
+  
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h> 
+#include <math.h> 
+#define max(a,b)  (((a) > (b)) ? (a) : (b))
+
+//AVL 트리 노드 정의
+typedef struct AVLNode
+{
+	int key;
+	struct AVLNode *left;
+	struct AVLNode *right;
+} AVLNode;
+
+//트리의 높이를 반환 
+int get_height(AVLNode *node)
+{
+	int height = 0;
+	
+	if(node != NULL){
+		height = 1 + max(get_height(node->left), get_height(node->right));
+	}
+	
+	return height;
+} 
+
+//노드의 균형인수를 반환
+int get_balance(AVLNode* node)
+{
+	if(node == NULL){
+		return 0;
+	}
+	
+	return get_height(node->left) - get_height(node->right);
+} 
+
+//노드를 동적으로 생성하는 함수
+AVLNode* create_node(int key)
+{
+	AVLNode* node = (AVLNode *)malloc(sizeof(AVLNode));
+	node->key = key;
+	node->left = NULL;
+	node->right = NULL;
+	return node;
+}
+
+//오른쪽으로 회전시키는 함수
+AVLNode *rotate_right(AVLNode *parent)
+{
+	AVLNode *child = parent->left;
+	parent->left = child->right; //위에서 값 전달했으니 NULL값을 넣어주는 것 
+	child->right = parent;
+	//새로운 루트 노드를 반환
+	return child; 
+} 
+
+//왼쪽으로 회전시키는 함수
+AVLNode *rotate_left(AVLNode *parent)
+{
+	AVLNode *child = parent->right;
+	parent->right = child->left;
+	child->left = parent;
+	//새로운 루트 반환
+	return child; 
+} 
+
+//AVL 트리에 새로운 노드 추가 함수
+// 새로운 루트를 반환한다.
+AVLNode * insert(AVLNode * node, int key)
+{
+	//이진 탐색 트리의 노드 추가 수행
+	if(node == NULL){
+		return (create_node(key));
+	}
+	
+	if(key < node->key){
+		node->left = insert(node->left, key);
+	}
+	else if(key > node->key){
+		node->right = insert(node->right, key);
+	}
+	else{ //동일한 ㅣㅋ는 허용되지 않음 
+		return node;
+	}
+	
+	//노드들의 균형인수 재계산-> 노드 삽입할때만 작동한다.(첫 번째 if블록 돌 떄만) 
+	int balance = get_balance(node); 
+	
+	
+//	Ll 타입 처리 : 새로운 노드가 왼쪽 자식의 왼쪽에 추가되었으면 LL 타입이다.
+//	새로운 노드가 왼쪽 자식의 왼쪽에 추가 되었으며 LL 타입이다. 
+//	-> balance는 순환 호출에서 돌아오면서 계속 구해진다. 밑에서부터 rotate 시키면서 올라간다. 
+//	
+//	(1) if 첫번 째 조건: balance가 무너질 경우
+//	(2) if 두번 째 조건: 시작한 왼쪽 노드에서 또 왼쪽으로 가는 경우 
+	
+	if(balance > 1 && key < node->left->key){
+		return rotate_right(node);
+	}
+	
+	//RR타입 처리
+	if(balance < -1 && key > node->right->key){
+		return rotate_left(node);
+	} 
+	
+	//LR 타입 처리
+	if(balance > 1 && key > node->left->key){
+		node->left = rotate_left(node->left); //마지막 노드는 왼쪽 회전 
+		return rotate_right(node); //LL 노드로 바뀐 노드를 다시 오른쪽 외전 시켜줌 -> 이중회전 완료 
+	}
+	
+	//RL 타입 처리
+	if(balance < -1 && key < node->right->key){
+		node->right =rotate_right(node->right);
+		return rotate_left(node);
+	} 
+	
+	return node; //balance 무너지지 않을 경우 노드 반환 
+} 
+
+//전위 순회 함수
+void preorder(AVLNode *root)
+{
+	if(root != NULL){
+		printf("[%d] ", root->key);
+		preorder(root->left);
+		preorder(root->right);
+	}
+} 
+
+double logB(double x, double base) {
+	return log(x)/log(base);
+}
+
+int main(void)
+{
+	
+	
+	srand(time(NULL));
+	
+//	printf("랜덤 값 확인 : %d, %d \n", rand(), rand());
+	
+	//노드 개수 100개인 트리 생성 
+	AVLNode *root100_1 = NULL;
+	for(int i = 0; i < 5000; i++){
+		root100_1 = insert(root100_1, rand());
+	}
+	
+	//노드 개수 100개인 트리 생성 
+	AVLNode *root100_2 = NULL;
+	for(int i = 0; i < 5000; i++){
+		root100_2 = insert(root100_2, rand());
+	}
+	
+	//노드 개수 100개인 트리 생성 
+	AVLNode *root100_3 = NULL;
+	for(int i = 0; i < 5000; i++){
+		root100_3 = insert(root100_3, rand());
+	}
+	
+	
+	printf("노드가 100개일 때 높이 평균 : %d\n", (get_height(root100_1) + get_height(root100_2) + get_height(root100_3)) / 3 );
+	printf("2[log2(n+1)]의 값: %f ", logB(5001, 2)*2);
+	
+	return 0;
+}
+
+ 
