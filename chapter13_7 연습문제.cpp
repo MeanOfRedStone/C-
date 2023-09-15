@@ -521,7 +521,7 @@
 (3) AVL 트리 연산 구현
 
 (4) 기본 코딩 이해 : 난수 발생시킬 수 있는지 
-*/
+
   
 #include <stdio.h>
 #include <stdlib.h>
@@ -688,6 +688,250 @@ int main(void)
 	printf("2[log2(n+1)]의 값: %f ", logB(5001, 2)*2);
 	
 	return 0;
+}*/
+
+
+
+/*
+8. 이진 탐색 트리는 숫자들을 정렬시키는데 이용이 가능하다.
+배열 a[]에 저장된 n개의 정수를 받아서 비어있는 이진 탐색트리에 삽입하고 중위 순회 순서대로 다시 배열에 넣으면 정렬된 숫자를 얻을 수 있다.
+이 정렬 방법을 구현하고 이 방법의 시간 복잡도를 삽입 정렬과 히프 정렬과 비교하라.
+
+출제 포인트:
+(1) 이진 탐색 트리 정의 이해 및 구현(이진 탐색과 히프와 차이점 구분)  
+(2) 삽입 정렬과 히프 정렬의 정의에 대한 이해 
+(3) 이진 탐색 트리, 삽입 정렬, 히프 정렬 시간복잡도 구할 수 있는지(연산 과정에 대한 이해 필요) 
+ 
+*/
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+typedef struct TreeNode {
+	int key;
+	TreeNode *left, *right;
+} TreeNode;
+
+///순환적인 탐색함수 
+TreeNode * search(TreeNode * node, int key)
+{
+	if(node == NULL){
+		return NULL;
+	}
+	if(key == node->key){
+		return node;
+	}
+	else if(key < node->key){
+		return search(node->left, key);
+	}
+	else{
+		return search(node->right, key);
+	}
 }
 
+TreeNode * new_node(int item)
+{
+	TreeNode * temp = (TreeNode *)malloc(sizeof(TreeNode));
+	temp->key = item;
+	temp->right = temp->left = NULL;
+	return temp;
+}
+
+TreeNode * insert_node(TreeNode * node, int key)
+{
+	//트리가 공백이면 새로운 노드를 반환
+	if(node == NULL){
+		return new_node(key);
+	} 
+	//탐색이 실패로 끝난 그 지점이 새로운 노드 값이 들어오는 지점이다. NULL 인 곳은 순환에 의해 new_node(key) 
+	if(key < node->key){
+		node->left = insert_node(node->left,key);
+	}
+	else if(key > node->key){
+		node->right = insert_node(node->right, key);
+	}
+	//변경된 루트 포인터를 반환한다. 
+	return node;
+}
+
+TreeNode * min_value_node(TreeNode * node)
+{
+	TreeNode * current = node;
+	
+	//여기서는 매개변수로 root->right을 받고 그 맨 왼쪽 단말 노드를 찾으로 내려감 
+	while(current->left != NULL){
+		current = current->left;
+	} 
+	
+	return current;
+}
+
+//이진 탐색 트리와 키가 주어지면 저장된 노들르 삭제하고
+//새로운 루트 노드를 반환한다.
+TreeNode * delete_node(TreeNode * root, int key)
+{
+	if(root == NULL){
+		return root;
+	}	
+	
+	//만약 키가 루트보다 작으면 왼쪽 트리에 있다.
+	if(key < root->key){
+		root->left = delete_node(root->left, key);
+	} 
+	else if(key > root->key){
+		root->right = delete_node(root->right ,key);
+	}
+	//루트 노드와 key 값이 같을 경우는 삭제가 들어가는 거임 위의 값이 다른경우는 같은 값이 나올때까지 순환하는 것. 
+	else{
+		if(root->left == NULL){
+			TreeNode * temp = root->right;
+			free(root);
+			return temp;
+		} 
+		else if(root -> right == NULL)
+		{
+			TreeNode * temp = root->left;
+			free(root);
+			return temp;
+		}
+		
+		TreeNode * temp = min_value_node(root->right);
+		
+		//중위 순회시 후계 노드를 복사한다.
+		root->key = temp->key;
+		//노드 자체를 때온 것이 아닌 키값만 넣어줬으니 아래 작업 필요 
+		//중위 순회시 후계 노드를 삭제한다. (중위 순회는 다음 차례가 오른쪽임. 기존에 있떤 자리에서 같은 값을 제거해줘야하자너)
+		root->right = delete_node(root->right, key);
+		//그리고 이제 다시는 남은 노드값이 NULL이 될 경우 맨 앞의 if(root == NULL) return root; 로 마무리 된다.	(반복 순회의 제일 마지막) 
+	}
+	
+	return root;//(여기서는 맨 처음의 root 까지 계속 타고타고 올라옴)
+} 
+
+//중위 순회
+void inorder(TreeNode *root){
+	if(root){
+		inorder(root->left); //왼쪽 서브트리 순회
+		printf(" [%d] ", root->key); //노드 방문
+		inorder(root->right); //오른쪽 서브트리 순회 
+		//이게 계속 반복되는 거임 
+	}
+} 
+
+#define SIZE 10
+int list[SIZE];
+
+int main(void)
+{
+	TreeNode * root = NULL;
+	
+	
+	srand(time(NULL));
+	
+	int i, n = SIZE;
+	
+	for(i = 0; i < n; i++){
+		list[i] = rand();
+	}
+	
+	for(i = 0; i < n; i++){
+		root = insert_node(root, list[i]);
+	}
+	
+	printf("이진 탐색 트리 중위 순회 결과 \n");
+	inorder(root);
+	printf("\n\n");
+	
+	return 0;
+} 
+
+< 시간 복잡도>
+0. 트리의 높이
+노드의 개수 n, 높이 h
+log2(n+1) <= h <= n 
  
+1. 이진 탐색 트리 (삽입, 삭제, 탐색)
+(1) 최악의 경우
+O(n) : 일렬로 배열되는 경우
+O(n * n)
+(2) 평균적인 경우
+O(h) = O(log2(n+1))  : 좌우 서브트리 균형 이룰 때
+ O(n * log2(n+1))
+2. 히프 정렬
+히프트리 전체 높이 거의 log2(n) * 요소의 개수(n)
+O( n * log2(n) ) 
+
+3.삽입 정렬 
+O(n^2) 
+
+ 
+
+/*
+9. 탐색키가 정수가 아닌 알파벳으로 되어 있는 경우에 공백 트리에서 시작하여 다음과 같은 순서로 AVL 트리로 삽입될 때, 각 단계에서의 AVL 트리를 그려라.
+또 각 단계에서 회전의 유형을 표시하라.
+
+출제 포인트: 
+(1) AVL 트리 개념 이해
+- 왼쪽 서브트리 오른쪽 서브트리 높이 차 1이하인 트리를 말한다.
+
+(2) 문자열 비교 
+
+
+<1>
+DEC
+
+<2>
+DEC
+	JAN
+	
+<3>
+	DEC
+APR		JAN
+ 
+<4>
+	DEC
+APR		JAN
+			MAR
+			
+<5>
+	DEC
+APR		JAN
+				MAR
+		  	JULY	
+		  	
+-> RL 회전
+
+ 	DEC
+APR			JULY
+		JAN		MAR
+		  	
+<6> AUG 삽입
+  		DEC
+APR					JULY 
+	AUG			JAN		MAR 
+	
+<7> OCT 삽입 
+  		DEC
+APR					JULY 
+	AUG			JAN		MAR 
+							OCT
+							
+<8> FEB 삽입
+  			DEC
+APR						JULY 
+	AUG				JAN		MAR 
+				FEB				OCT 
+				
+<9> SEPT 삽입
+  			DEC
+APR							JULY 
+	AUG				JAN				OCT 
+				FEB				MAR			SPET 
+				
+<10> NOV 삽입
+  			DEC
+APR							JULY 
+	AUG				JAN					OCT 
+				FEB				MAR				SPET  
+									NOV 
+ */
